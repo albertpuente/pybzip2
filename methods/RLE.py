@@ -1,5 +1,9 @@
 '''
 Run Length Encoding encoding/decoding methods
+
+encoding params (reverse for decoding)
+input: list
+output: list
 '''
 
 from functools import reduce

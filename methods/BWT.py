@@ -1,5 +1,9 @@
 '''
 Burrows-Wheeler Transform encoding/decoding methods
+
+encoding params (reverse for decoding)
+input: list
+output: list, bwt_column
 '''
 
 def bwt_encode(msg) :

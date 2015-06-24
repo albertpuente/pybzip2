@@ -1,5 +1,8 @@
 '''
 Move To Front transform encoding/decoding methods
+encoding params (reverse for decoding)
+input: list
+output: list, mtf_stack
 '''
 
 def mtf_encode(msg) :
