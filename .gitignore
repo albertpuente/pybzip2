@@ -9,6 +9,8 @@
 !methods/*
 !input
 !input/*
+!interface.py
 !pybzip2.py
+!icon.ico
 !tests.py
 !README.md
