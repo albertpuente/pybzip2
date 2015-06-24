@@ -5,6 +5,8 @@ Run Length Encoding encoding/decoding methods
 from functools import reduce
 
 def rle_encode(msg) :
+    if len(msg) == 0: return msg
+
     coded = []
     counter = 1
     last = msg[0]

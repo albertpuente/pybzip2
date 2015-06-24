@@ -5,7 +5,7 @@ Performs tests over a series of encoding/decoding methods
 import random
 from mytimeit import timeit
 
-def test(coder, decoder, N = 2**10, alphabet="abcdefghijklmnopqrstuvwxyz") :
+def test(coder, decoder, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
     msg = []
     for _ in range(N) : msg += [alphabet[random.randint(0, len(alphabet) - 1)]]
 
@@ -18,6 +18,7 @@ def test(coder, decoder, N = 2**10, alphabet="abcdefghijklmnopqrstuvwxyz") :
     else :
         print("Decoding went wrong:")
         print("Original:", msg[:30])
+        print("Coded   :", coded[:30])
         print("Decoded :", decoded[:30])
 
 if __name__ == '__main__' :
@@ -29,3 +30,6 @@ if __name__ == '__main__' :
 
     from BWT import *
     test(bwt_encode, bwt_decode)
+
+    from delta import *
+    test(delta_encode, delta_decode, alphabet=list(range(10)))
