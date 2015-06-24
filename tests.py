@@ -5,7 +5,7 @@ Performs tests over a series of encoding/decoding methods
 import random
 from utils.mytimeit import timeit
 
-def test(coder, decoder, msg =[], N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
+def test(coder, decoder, msg=None, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
     '''
     encodes and decodes a message, checking if the result coincides with the original
     :param coder: coder function
@@ -15,8 +15,9 @@ def test(coder, decoder, msg =[], N = 2**10, alphabet=list("abcdefghijklmnopqrst
         :param alphabet: list of elements used to build the message (if random)
     :return:
     '''
-    if len(msg) == 0 :
+    if msg is None :
         # build random message if none is passed
+        msg = []
         for _ in range(N) :
             msg += [alphabet[random.randint(0, len(alphabet) - 1)]]
     else :
