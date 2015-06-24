@@ -5,7 +5,7 @@ Performs tests over a series of encoding/decoding methods
 import random
 from utils.mytimeit import timeit
 
-def test(coder, decoder, msg=None, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
+def test(coder, decoder, msg=None, N = 2**10, alphabet=list(range(10))) :
     '''
     encodes and decodes a message, checking if the result coincides with the original
     :param coder: coder function
@@ -46,4 +46,4 @@ if __name__ == '__main__' :
     test(bwt_encode, bwt_decode)
 
     from methods.delta import *
-    test(delta_encode, delta_decode, alphabet=list(range(10)))
+    test(delta_encode, delta_decode)
