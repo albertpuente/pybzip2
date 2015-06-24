@@ -22,14 +22,14 @@ def test(coder, decoder, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz"))
         print("Decoded :", decoded[:30])
 
 if __name__ == '__main__' :
-    from MTF import *
-    test(mft_encode, mft_decode)
+    from methods.MTF import *
+    test(mtf_encode, mtf_decode)
 
-    from RLE import *
+    from methods.RLE import *
     test(rle_encode, rle_decode)
 
-    from BWT import *
+    from methods.BWT import *
     test(bwt_encode, bwt_decode)
 
-    from delta import *
+    from methods.delta import *
     test(delta_encode, delta_decode, alphabet=list(range(10)))

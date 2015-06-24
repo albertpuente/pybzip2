@@ -2,7 +2,7 @@
 Move To Front transform encoding/decoding methods
 '''
 
-def mft_encode(msg) :
+def mtf_encode(msg) :
     recent = list(set(msg))
     recent.sort()
 
@@ -16,7 +16,7 @@ def mft_encode(msg) :
 
     return coded, recent
 
-def mft_decode(coding) :
+def mtf_decode(coding) :
     coded  = coding[0][::-1]
     recent = coding[1]
 
