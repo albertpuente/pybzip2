@@ -164,7 +164,7 @@ def launchInterface():
     root = tk.Tk()
     root.geometry('800x380') # Window size
     root.resizable(0,0) # Disable resize
-    root.title('bzip2 - CDI Project')
+    root.title('bzip2 - CDI')
     # root.iconbitmap('icon.ico')
     try:
         app = Application(master = root)
