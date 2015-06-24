@@ -111,11 +111,10 @@ class Application(tk.Frame):
     def selectAction(self):
         path = filedialog.askopenfilename()
         print ("Load file from: ", path)
-        
-        # self.data = andres.read(path)
-        
-        self.compressButton.configure(state='normal')
-        self.decompressButton.configure(state='normal')
+        if path != '':
+            # self.data = andres.read(path)
+            self.compressButton.configure(state='normal')
+            self.decompressButton.configure(state='normal')
         
     def compressAction(self):
         print("compression!")
