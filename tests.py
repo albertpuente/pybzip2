@@ -5,9 +5,22 @@ Performs tests over a series of encoding/decoding methods
 import random
 from utils.mytimeit import timeit
 
-def test(coder, decoder, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
-    msg = []
-    for _ in range(N) : msg += [alphabet[random.randint(0, len(alphabet) - 1)]]
+def test(coder, decoder, msg =[], N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
+    '''
+    encodes and decodes a message, checking if the result coincides with the original
+    :param coder: coder function
+    :param decoder: decoder function
+    :param msg: message to be processed, by default is randomly generated
+        :param N: length of msg to be generated (if random)
+        :param alphabet: list of elements used to build the message (if random)
+    :return:
+    '''
+    if len(msg) == 0 :
+        # build random message if none is passed
+        for _ in range(N) :
+            msg += [alphabet[random.randint(0, len(alphabet) - 1)]]
+    else :
+        N = len(msg)
 
     print("\n" + ">"*2 + " running tests (length: " + str(N) + ") for: ", end ="")
     print(coder.__name__ + ", " + decoder.__name__)
