@@ -165,7 +165,7 @@ def launchInterface():
     root.geometry('800x380') # Window size
     root.resizable(0,0) # Disable resize
     root.title('bzip2 - CDI Project')
-    root.iconbitmap('icon.ico')
+    # root.iconbitmap('icon.ico')
     try:
         app = Application(master = root)
         app.mainloop()
