@@ -1,3 +1,11 @@
-.idea
-__*
-*~
+# everything
+*
+
+# but these
+!.gitignore
+!utils
+!utils/*
+!methods
+!methods/*
+!tests.py
+!README.md

@@ -3,7 +3,7 @@ Performs tests over a series of encoding/decoding methods
 '''
 
 import random
-from mytimeit import timeit
+from utils.mytimeit import timeit
 
 def test(coder, decoder, N = 2**10, alphabet=list("abcdefghijklmnopqrstuvwxyz")) :
     msg = []
