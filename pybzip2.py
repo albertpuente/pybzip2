@@ -68,8 +68,15 @@ C = pybzip2compressor(list(bytes))
 C.compress()
 C.decompress()
 
-print(list(original))
-print(C.decompressed)
+# print(list(original)[40:])
+# print(C.compressed[40:])
+# print(C.decompressed[40:])
 
-print(original)
-print(uc.intlist2bytes(C.decompressed))
+if list(original) == C.decompressed:
+    print("success")
+else :
+    print("Fail")
+# print(original)
+# print(uc.intlist2bytes(C.decompressed))
+
+print("Compression ratio:", (1 - (len(C.compressed) / file_size)) * 100, "%")
