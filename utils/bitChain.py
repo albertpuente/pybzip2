@@ -11,12 +11,11 @@ class bitChain:
         return len(self.chain)
 
     def append(self, data, bitLength):
-        T = type(data)
-        if T == bytes: 
-            data = int.from_bytes(data, byteorder = 'little')
-        elif T == str:
+        if type(data) == str:
             data = str.encode(data)
-        elif T != int:
+        if type(data) == bytes: 
+            data = int.from_bytes(data, byteorder = 'little')
+        if type(data) != int:
             raise Exception("bitChain.append expects int or bytes type")
             
         new = []
@@ -29,7 +28,7 @@ class bitChain:
 
     def toBytes(self):
         if len(self.chain)%8 != 0:
-            print ("bitChain is not complete (byte whole)")
+            print ("Warning: bitChain is not complete (byte whole)")
             
         B = b""
         ints = []
