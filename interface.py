@@ -47,12 +47,12 @@ class Application(tk.Frame):
         
         self.arrow3 = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = '↓',pady = 7, state = 'disabled')
+            text = '↓',pady = 7)
         self.arrow3.grid(column = 0,row = 3, columnspan=2)
         
         self.arrow5 = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = '↓',pady = 7, state = 'disabled')
+            text = '↓',pady = 7)
         self.arrow5.grid(column = 0,row = 5, columnspan=2)
         
         # Space widget (middle)
@@ -83,12 +83,12 @@ class Application(tk.Frame):
         
         self.arrow3d = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = '↓',pady = 7, state = 'disabled')
+            text = '↓',pady = 7)
         self.arrow3d.grid(column = 3,row = 3, columnspan=2)
         
         self.arrow5d = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = '↓',pady = 7, state = 'disabled')
+            text = '↓',pady = 7)
         self.arrow5d.grid(column = 3,row = 5, columnspan=2)
         
         # About (information) widgets
@@ -119,6 +119,12 @@ class Application(tk.Frame):
                 icon = 'warning')
             if not result:
                 return
+            else:
+                self.testButton.configure(state = 'disabled')
+                self.testDecButton.configure(state = 'disabled')
+                self.saveButton.configure(state = 'disabled')
+                self.saveDecButton.configure(state = 'disabled')
+                
         
         path = filedialog.askopenfilename()
         print ("Load file from: ", path)
@@ -150,7 +156,7 @@ class Application(tk.Frame):
         self.bzip2.decompress()
         if self.bzip2.msg == self.bzip2.decompressed:
             messagebox.showinfo('Validation', 
-                'Compression/decompression works:', icon = 'info')
+                'Compression/decompression OK.', icon = 'info')
             self.saveButton.configure(state='normal')
         else :
             messagebox.showinfo('Validation', 
