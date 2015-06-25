@@ -127,8 +127,8 @@ class Application(tk.Frame):
                 
         
         path = filedialog.askopenfilename()
-        print ("Load file from: ", path)
         if path != '':
+            print ("Loading file from: ", path)
             with open(path, "rb") as file:
                 bytes = file.read(file_size)
 
@@ -136,6 +136,8 @@ class Application(tk.Frame):
             
             self.compressButton.configure(state='normal')
             self.decompressButton.configure(state='normal')
+        else:
+            print ("Loading cancelled")
         
     def compressAction(self):
         self.bzip2.compress()
