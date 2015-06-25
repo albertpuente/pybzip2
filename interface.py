@@ -5,12 +5,16 @@ import sys # Show exceptions
 
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
+
+from pybzip2 import *
 
 class Application(tk.Frame):
     def __init__(self, master = None):
         tk.Frame.__init__(self, master)
         self.grid(padx = 40, pady = 40)
         self.createWidgets()
+        self.bzip2 = None
         
     def createWidgets(self):
         
@@ -109,37 +113,49 @@ class Application(tk.Frame):
         
     # Signal functions
     def selectAction(self):
+        if self.bzip2 != None:
+            result = messagebox.askyesno("Restart", "Do you want to erase the"\
+                " previous \nloaded file and load another one?", 
+                icon = 'warning')
+            if not result:
+                return
+        
         path = filedialog.askopenfilename()
         print ("Load file from: ", path)
         if path != '':
-            # self.data = andres.read(path)
+            with open(path, "rb") as file:
+                bytes = file.read(file_size)
+
+            self.bzip2 = pybzip2compressor(list(bytes))
+            
             self.compressButton.configure(state='normal')
             self.decompressButton.configure(state='normal')
         
     def compressAction(self):
-        print("compression!")
-        
-        # self.compression = andres.read(self.data)
-        
+        self.bzip2.compress()
+        ratio = 100*len(self.bzip2.compressed)/len(self.bzip2.msg)
+        messagebox.showinfo('Compression done', 
+                'Compression ratio: %f%%'%ratio, icon = 'info')
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
     
     def decompressAction(self):
-        print("decompression!")
-        
-        # self.decompression = andres.decompress(self.data)
+        self.bzip2.decompress()
         
         self.compressButton.configure(state='normal')
         self.testDecButton.configure(state='normal')
         self.saveDecButton.configure(state='normal')
         
     def testCompressionAction(self):
-        print("test compression!")
-        
-        # self.info = andres.compare(self.data,
-        #     andres.decompress( andres.compress(data) )
-        
-        self.saveButton.configure(state='normal')
+        self.bzip2.decompress()
+        if self.bzip2.msg == self.bzip2.decompressed:
+            messagebox.showinfo('Validation', 
+                'Compression/decompression works:', icon = 'info')
+            self.saveButton.configure(state='normal')
+        else :
+            messagebox.showinfo('Validation', 
+                'Compression/decompression error.',
+                icon = 'error')
         
     def testDecompressionAction(self):
         print("test decompression (optional)!")
@@ -165,7 +181,6 @@ def launchInterface():
     root.geometry('800x380') # Window size
     root.resizable(0,0) # Disable resize
     root.title('bzip2 - CDI')
-    # root.iconbitmap('icon.ico')
     try:
         app = Application(master = root)
         app.mainloop()
