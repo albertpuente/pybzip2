@@ -47,3 +47,4 @@ def block_crc32(data): # 4 Bytes
         data = intlist2bytes(data)
     crc = binascii.crc32(data) 
     return bytearray.fromhex(format(crc, 'x'))
+    

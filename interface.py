@@ -20,29 +20,29 @@ class Application(tk.Frame):
         
         # Open file
         self.openButton = tk.Button(self, text = 'Select file', width = 30,
-            font=("TkTextFont", 10), command = self.selectAction)
+            font=("TkTextFont", 10), command = self.selectAction,bg='#BBBBBB')
         self.openButton.grid(column = 1,row = 0, columnspan=3)
         
         # Compression branch widgets
         self.compressButton = tk.Button(self, text = 'Compress', width = 20,
             font=("TkTextFont", 10), command = self.compressAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.compressButton.grid(column = 0,row = 2, columnspan=2)
         
         self.testButton = tk.Button(self, text = 'Test compression',width = 20,
             font=("TkTextFont", 10), command = self.testCompressionAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.testButton.grid(column = 0,row = 4, columnspan=2)
         
         self.saveButton = tk.Button(self, text = 'Save compressed file', 
             width = 20, font=("TkTextFont", 10), 
             command = self.saveCompressionAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.saveButton.grid(column = 0,row = 6, columnspan=2)
         
         self.arrow1 = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = ' ↙',pady = 7)
+            text = '   ↙',pady = 7)
         self. arrow1.grid(column = 0,row = 1, columnspan=2)
         
         self.arrow3 = tk.Label(self, fg='#333333',
@@ -62,23 +62,23 @@ class Application(tk.Frame):
         # Decompression branch widgets
         self.decompressButton = tk.Button(self, text = 'Decompress', width = 20,
             font=("TkTextFont", 10), command = self.decompressAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.decompressButton.grid(column = 3,row = 2, columnspan=2)
         
         self.testDecButton = tk.Button(self, text = 'Compare (optional)',
             width = 20,
             font=("TkTextFont", 10), command = self.testDecompressionAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.testDecButton.grid(column = 3,row = 4, columnspan=2)
         
         self.saveDecButton = tk.Button(self, text = 'Save file', width = 20,
             font=("TkTextFont", 10), command = self.saveDecompressionAction,
-            state = 'disabled')
+            state = 'disabled',bg='#BBBBBB')
         self.saveDecButton.grid(column = 3,row = 6, columnspan=2)
         
         self.arrow1d = tk.Label(self, fg='#333333',
             font=("TkTextFont", 20),
-            text = '↘ ',pady = 7)
+            text = '↘   ',pady = 7)
         self.arrow1d.grid(column = 3,row = 1, columnspan=2)
         
         self.arrow3d = tk.Label(self, fg='#333333',
