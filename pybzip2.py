@@ -4,13 +4,13 @@ bzip2 python implementation
 CDI-FIB
 Joan Ginés, Albert Puente, Andrés Mingorance
 '''
-
 import os
 import utils.convert as uc
 from methods.MTF import *
 from methods.RLE import *
 from methods.BWT import *
 from methods.delta import *
+
 
 class pybzip2compressor:
     def __init__(self, msg, lvl=1):
@@ -27,7 +27,7 @@ class pybzip2compressor:
         res, mtf_stack = mtf_encode(res)
         self.mtf_stack = mtf_stack
         # Run-length encoding (RLE) of MTF result
-        res = rle_encode(res)
+        res = rle2_encode(res)
         # Huffman coding
         # Selection between multiple Huffman tables
         # Unary base 1 encoding of Huffman table selection
@@ -46,7 +46,7 @@ class pybzip2compressor:
         # Huffman coding
         res = self.compressed
         # Run-length encoding (RLE) of MTF result
-        res = rle_decode(res)
+        res = rle2_decode(res)
         # Move to front (MTF) transform
         res = mtf_decode((res, self.mtf_stack))
         # Burrows–Wheeler transform (BWT) or block sorting
