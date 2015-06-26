@@ -38,7 +38,7 @@ class bitChain:
         elif type(data) == bitChain:
             self.chain += data.bits()
         else:
-            raise Exception("bitChain.append expects int or bytes type")
+            raise Exception("bitChain.append type:",type(data),'not supported')
         
 
     def toBytes(self):
