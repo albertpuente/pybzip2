@@ -2,7 +2,7 @@
 Bytes for constructing .bz2 streams
 '''
 import binascii
-from utils.bitChain import *
+from bitChain import *
 
 def crc32(data): # 4 Bytes
     if type(data) == list:
