@@ -31,7 +31,7 @@ def write_bz2(path, bzipBlocks):
         blockChain.append(0x314159265359, 48)
         
         # CRC 32 of this block
-        blockChain.append(crc32(block), 32)
+        blockChain.append(crc32(bzipBlock.compressed), 32)
         
         # Randomization (deprecated)
         blockChain.append(0, 1)
@@ -48,12 +48,17 @@ def write_bz2(path, bzipBlocks):
         for i in range (0, nBitMaps):
             blockChain.append(bzipBlock.bit_maps[i], 16) # 0..256
         
-        
         # 2..6 number of different Huffman tables in use
         blockChain.append(bzipBlock.huffman_groups, 3)
         
-        # number of times that the Huffman tables are swapped (each 50 bytes)
-        blockChain.append(bzipBlock.huffman_groups, 15)
+        '''
+        number of times that the Huffman tables are swapped (each 50 bytes)
+        
+        Every 50B table swap
+        900*2**10 / 50 = 18432 changes
+        Requires 14.17 bits to be codified
+        '''
+        blockChain.append(bzipBlock.selectors_used, 15)
         
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
         # blockChain.append(TODO, TODO) # 1..6

@@ -21,7 +21,7 @@ class Application(tk.Frame):
         
         # Open file
         self.openButton = tk.Button(self, text = 'Select file', width = 30,
-            font=("TkTextFont", 10), command = self.selectAction,bg='#BBBBBB')
+            font=("TkTextFont", 10), command = self.openFile,bg='#BBBBBB')
         self.openButton.grid(column = 1,row = 0, columnspan=3)
         
         # Compression branch widgets
@@ -113,7 +113,7 @@ class Application(tk.Frame):
         
         
     # Signal functions
-    def selectAction(self):
+    def openFile(self):
         if self.bzip2Blocks != None:
             result = messagebox.askyesno("Restart", "Do you want to erase the"\
                 " previous \nloaded file and load another one?", 
