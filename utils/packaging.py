@@ -102,11 +102,14 @@ def read_bz2(path):
         raise Exception('bitChain class is not working!')
     
     # File signature
-    signature = dataChain.get(0, 31).toBytes()
-    if signature != b'BZh9':
+    signature = dataChain.get(0, 23).toBytes()
+    if signature != b'BZh':
         raise Exception('Wrong file signature:', signature)
     else:
         print ('File signature recognised:', signature)
+        
+    blockSize = dataChain.get(24,31).toBytes()
+    print ("Block size:", blockSize)
         
     # Search blocks starts
     pi = bitChain(0x314159265359, 48)
@@ -173,4 +176,4 @@ def read_bz2(path):
             dataChain.get(CRC_position+32, dataChain.length()-1))
     
 # TEST
-read_bz2('./input/Test.txt.bz2')
+read_bz2('./input/subs.srt.bz2')

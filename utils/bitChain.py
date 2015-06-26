@@ -18,10 +18,13 @@ class bitChain:
     def length(self):
         return len(self.chain)
 
-    def append(self, data, bitLength):
+    def append(self, data, bitLength = None):
         if type(data) == str:
-            data = str.encode(data)
-        if type(data) == bytes: 
+            for x in data:
+                if x != '0' and x != '1':
+                    raise Exception('append: string must be binary')
+                self.chain.append(int(x))
+        elif type(data) == bytes: 
             ints = list(data)
             for i in ints:
                 bits = "{0:b}".format(i)
@@ -29,6 +32,8 @@ class bitChain:
                 self.chain += [int(x) for x in bits]
             
         elif type(data) == int:
+            if not bitLength:
+                raise Exception("append: int requires bitLength")
             new = []
             while bitLength > 0:
                 if data%2: new.insert(0, 1)
