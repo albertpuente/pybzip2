@@ -2,7 +2,8 @@
 Bytes for constructing .bz2 streams
 '''
 import binascii
-from bitChain import *
+from .bitChain import *
+from .convert import *
 
 def crc32(data): # 4 Bytes
     if type(data) == list:
@@ -172,4 +173,6 @@ def read_bz2(path):
             dataChain.get(CRC_position+32, dataChain.length()-1))
     
 # TEST
-read_bz2('input/Test.txt.bz2')
+
+def test():
+    read_bz2('input/Test.txt.bz2')

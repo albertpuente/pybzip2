@@ -2,7 +2,7 @@
 Work with bits/bytes/hex/ints without pain
 '''
 import binascii
-from convert import *
+# from .convert import *
 
 class bitChain:
     def __init__(self, inputData = [], bitLength = None):
