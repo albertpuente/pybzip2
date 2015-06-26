@@ -16,7 +16,7 @@ class bitChain:
         if type(data) == str:
             for x in data:
                 if x != '0' and x != '1':
-                    raise Exception('append: string must be binary')
+                    raise Exception('bitChain.append: string must be binary')
                 self.chain.append(int(x))
         elif type(data) == bytes: 
             ints = list(data)
@@ -27,7 +27,7 @@ class bitChain:
             
         elif type(data) == int:
             if not bitLength:
-                raise Exception("append: int requires bitLength")
+                raise Exception("bitChain.append: int requires bitLength")
             new = []
             while bitLength > 0:
                 if data%2: new.insert(0, 1)
@@ -35,6 +35,8 @@ class bitChain:
                 bitLength -= 1
                 data >>= 1
             self.chain += new
+        elif type(data) == bitChain:
+            self.chain += data.bits()
         else:
             raise Exception("bitChain.append expects int or bytes type")
         
