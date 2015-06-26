@@ -10,7 +10,63 @@ from methods.MTF import *
 from methods.RLE import *
 from methods.BWT import *
 from methods.delta import *
+from utils.bitChain import bitChain
 
+def unarize(lengths):
+    '''
+    transforms a list of lengths into its unary codification
+    ex: [1,2,3] -> 10110111
+    returns a bitChain
+    '''
+    return bitChain('0'.join(x*'1' for x in lengths))
+
+
+def deunarize(bc):
+    from itertools import groupby
+    # transform bit chain to list of 1s and 0s
+    bits = (bc[i] for i in range(len(bc)))
+    # group by 1s, output the length of the group
+    return [len(list(k)) for x,k in groupby(bits) if x == 1]
+
+print(deunarize(unarize([1,2,3])))
+
+def sparse(source):
+    '''
+    returns a sparse array given a source of bytes.
+    if a byte value (0..255) appears in the source, the array holds a 1 in its [value] position, 0 otherwise
+    the array is divided in blocks of 16 to avoid long sequences of 0s, and blocks of 16 0s are ommitted
+    '''
+    bytes_in_source = [''.join('1' if x in source else '0' for x in range(i*16, i*16+16)) for i in range(16)]
+    all0 = lambda x : all(b=='0' for b in x)
+    return bitChain(''.join('0' if all0(block) else '1' for block in bytes_in_source) + # front header
+                    ''.join(block for block in bytes_in_source if not all0(block)))     # values
+    # front = ''
+    # used = ''
+    # for i in range(16):
+    #     all0 = True
+    #     for j in range(i*16, i*16 + 16):
+    #         if j in source:
+    #             used += '1'
+    #             all0 = False
+    #         else : used += '0'
+    #     if all0:
+    #         front += '0'
+    #         used = used[:-16]
+    #     else :
+    #         front += '1'
+    # return bitChain(front+used)
+
+def unsparse(bc):
+    values = []
+    non0blocks = 0
+    for i in range(16):
+        if bc[i] == 1: # block contains some non0 value
+            for j in range(16):
+                if bc[16 + non0blocks*16 + j] == 1:
+                    values += [i*16 + j]
+    return values
+
+print(unsparse(sparse(range(20,30))))
 
 class pybzip2compressor:
     def __init__(self, msg, lvl=1):
