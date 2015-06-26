@@ -1,6 +1,7 @@
 '''
 Work with bits/bytes/hex/ints without pain
 '''
+import binascii
 from utils.convert import *
 
 class bitChain:
