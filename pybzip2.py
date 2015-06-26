@@ -12,7 +12,7 @@ from methods.BWT import *
 from methods.other import *
 
 class pybzip2compressor:
-    def __init__(self, msg, lvl=1):
+    def __init__(self, msg = None, lvl=1):
         self.msg = msg
         self.compressed = None
 

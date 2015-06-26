@@ -8,13 +8,14 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 from pybzip2 import *
+from utils.packaging import *
 
 class Application(tk.Frame):
     def __init__(self, master = None):
         tk.Frame.__init__(self, master)
         self.grid(padx = 40, pady = 40)
         self.createWidgets()
-        self.bzip2 = None
+        self.bzip2Blocks = None
         
     def createWidgets(self):
         
@@ -113,7 +114,7 @@ class Application(tk.Frame):
         
     # Signal functions
     def selectAction(self):
-        if self.bzip2 != None:
+        if self.bzip2Blocks != None:
             result = messagebox.askyesno("Restart", "Do you want to erase the"\
                 " previous \nloaded file and load another one?", 
                 icon = 'warning')
@@ -129,34 +130,57 @@ class Application(tk.Frame):
         path = filedialog.askopenfilename()
         if path != '':
             print ("Loading file from: ", path)
-            with open(path, "rb") as file:
-                bytes = file.read(file_size)
-
-            self.bzip2 = pybzip2compressor(list(bytes))
+            (fileType, self.bzip2Blocks) = read_bz2(path)
+            print ("Done")
             
-            self.compressButton.configure(state='normal')
-            self.decompressButton.configure(state='normal')
+            if (fileType == 'raw'):
+                self.compressButton.configure(state='normal')
+                
+                
+            elif (fileType == 'bz2'):
+                self.decompressButton.configure(state='normal')
+            else:
+                raise Exception('Unknown filetype')
+                    
         else:
             print ("Loading cancelled")
         
+        
     def compressAction(self):
-        self.bzip2.compress()
-        ratio = 100*len(self.bzip2.compressed)/len(self.bzip2.msg)
+        i = 0
+        for block in self.bzip2Blocks:
+            print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
+            block.compress()
+            i += 1
+            
         messagebox.showinfo('Compression done', 
-                'Compression ratio: %f%%'%ratio, icon = 'info')
+            '{} {}\n{} {}'.format(i, 'blocks compressed.','Compression ratio:', -1), icon = 'info')
+            
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
     
     def decompressAction(self):
-        self.bzip2.decompress()
+        i = 0
+        for block in self.bzip2Blocks:
+            print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
+            block.decompress()
+            i += 1
+        
+        messagebox.showinfo('Decompression done', 
+            'Compression ratio: TODO', icon = 'info')
         
         self.compressButton.configure(state='normal')
         self.testDecButton.configure(state='normal')
         self.saveDecButton.configure(state='normal')
         
     def testCompressionAction(self):
-        self.bzip2.decompress()
-        if self.bzip2.msg == self.bzip2.decompressed:
+        for block in self.bzip2Blocks:
+            block.decompress()
+        
+        original = [x.msg for x in self.bzip2Blocks]
+        decompression = [x.decompressed for x in self.bzip2Blocks]
+        
+        if original == decompression:
             messagebox.showinfo('Validation', 
                 'Compression/decompression OK.', icon = 'info')
             self.saveButton.configure(state='normal')
@@ -166,20 +190,20 @@ class Application(tk.Frame):
                 icon = 'error')
         
     def testDecompressionAction(self):
-        print("test decompression (optional)!")
+        print("TODO: test decompression (optional)!")
         
         path = filedialog.askopenfilename()
         # originalData = andres.read(path)
         # self.info = andres.compare(originalData, self.decompression)
         
     def saveCompressionAction(self):
-        print("save compression!")
+        print("TODO: save compression!")
         path = filedialog.asksaveasfilename()
         print(path)
         # andres.save(self.compression, path)
         
     def saveDecompressionAction(self):
-        print("save decompression!")
+        print("TODO: save decompression!")
         path = filedialog.asksaveasfilename()
         print(path)
         # andres.save(self.decompression, path)

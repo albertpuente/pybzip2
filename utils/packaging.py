@@ -4,6 +4,7 @@ Bytes for constructing .bz2 streams
 import binascii
 from utils.bitChain import *
 from utils.convert import *
+from pybzip2 import *
 
 def crc32(data): # 4 Bytes
     if type(data) == list:
@@ -13,7 +14,7 @@ def crc32(data): # 4 Bytes
         
     return binascii.crc32(data)
     
-def write_bz2(path, blocks):
+def write_bz2(path, bzipBlocks):
     TODO = 0 # Provisional
     
     dataChain = bitChain() # What is going to be written
@@ -22,7 +23,7 @@ def write_bz2(path, blocks):
     # "BZ" with "h"uffman and blocks of "9"00KB (max)
     dataChain.append(b'BZh9', 32) # File signature
     
-    for block in blocks:
+    for bzipBlock in bzipBlocks:
 
         blockChain = bitChain()
         
@@ -36,32 +37,36 @@ def write_bz2(path, blocks):
         blockChain.append(0, 1)
         
         # Starting pointer into BWT for after untransform
-        blockChain.append(TODO, 24)
+        blockChain.append(bzipBlock.bwt_start_pointer, 24)
         
         # Bitmap, of ranges of 16 bytes, present/not present        
-        blockChain.append(TODO, 16)
+        blockChain.append(bzipBlock.huffman_used_map, 16)
         
         # Bitmap, of symbols used, present/not present (multiples of 16)
-        blockChain.append(TODO, TODO) # 0..256
+        HUM = bitChain(bzipBlock.huffman_used_map)
+        nBitMaps = sum(HUM.bits())
+        for i in range (0, nBitMaps):
+            blockChain.append(bzipBlock.bit_maps[i], 16) # 0..256
+        
         
         # 2..6 number of different Huffman tables in use
-        blockChain.append(TODO, 3)
+        blockChain.append(bzipBlock.huffman_groups, 3)
         
         # number of times that the Huffman tables are swapped (each 50 bytes)
-        blockChain.append(TODO, 15)
+        blockChain.append(bzipBlock.huffman_groups, 15)
         
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
-        blockChain.append(TODO, TODO) # 1..6
+        # blockChain.append(TODO, TODO) # 1..6
         
         # 0..20 starting bit length for Huffman deltas
-        blockChain.append(TODO, 5)
+        # blockChain.append(TODO, 5)
         
         # delta_bit_length
-        blockChain.append(TODO, TODO) # 1..40
+        # blockChain.append(TODO, TODO) # 1..40
         
         # Contents
-        blockChain.append(TODO, TODO) # 2bits..900KB
-        streamChain.append(TODO, TODO)
+        blockChain.append(bzipBlock.compressed) # 2bits..900KB
+        streamChain.append(bzipBlock.compressed)
         
         # Block end
         dataChain.chain += blockChain.chain
@@ -90,12 +95,15 @@ def find_start(sl,l):
     return results
 
 def read_bz2(path):
+    bzipBlocks = []
     file = open(path, 'rb')
     inputData = file.read()
-    
-    dataChain = bitChain(inputData)
-    
+    rawBytes = inputData
     file.close()
+    
+    dataChain = bitChain(rawBytes)
+    
+    
     if inputData == dataChain.toBytes():
         print ('File converted to bitChain correctly.')
     else:
@@ -104,7 +112,16 @@ def read_bz2(path):
     # File signature
     signature = dataChain.get(0, 24).toBytes()
     if signature != b'BZh':
-        raise Exception('Wrong file signature:', signature)
+        print('Unknown signature: raw file mode')
+        
+        NB = 900000 # Blocks of 900KB (maximum)
+        rawIntBytes = list(rawBytes)
+        blocks = [rawIntBytes[i:i+NB] for i in range(0, len(rawIntBytes), NB)]
+        
+        bzipBlocks = [pybzip2compressor(block) for block in blocks]
+        
+        return ('raw', bzipBlocks)
+        
     else:
         print ('File signature recognised:', signature)
         
@@ -122,7 +139,11 @@ def read_bz2(path):
     print ('Blocks end at position:', blocks_end)
     
     # For each block
-    for start in blocks:
+    for iBlock in range(0, len(blocks)):
+        start = blocks[iBlock]
+        
+        bzipBlock = pybzip2compressor()
+        
         print ("BLOCK at position", start)
         print ("    PI:", 
             dataChain.get(start, start + 48).toHex())
@@ -136,34 +157,46 @@ def read_bz2(path):
             dataChain.get(start, start+1))
             
         start += 1
-        print ("    BWT Start pointer:",
-            dataChain.get(start, start+24).toInt())
-            
+        bzipBlock.bwt_start_pointer = dataChain.get(start, start+24).toInt()
+        print ("    BWT Start pointer:",bzipBlock.bwt_start_pointer)
+        
         start += 24
-        print ("    Huffman used map:",
-            dataChain.get(start, start+16))
+        bzipBlock.huffman_used_map = dataChain.get(start, start+16)
+        print ("    Huffman used map:", bzipBlock.huffman_used_map)
             
-        nBitMaps = sum(dataChain.get(start, start+16).bits())
-        print ("    nBitMaps:", nBitMaps)
+        bzipBlock.n_bit_maps = sum(dataChain.get(start, start+16).bits())
+        print ("    n_bit_maps:", bzipBlock.n_bit_maps)
         
         start += 16
-        for i in range (0, nBitMaps):
+        bzipBlock.bit_maps = []
+        for i in range (0, bzipBlock.n_bit_maps):
+            bzipBlock.bit_maps.append(dataChain.get(start, start+16))
             print ("    Bitmap",i,":",
                 dataChain.get(start, start+16))
             start += 16
             
-        print ("    Huffman groups:",
-            dataChain.get(start, start + 3).toInt())
+        bzipBlock.huffman_groups = dataChain.get(start, start + 3).toInt()
+        print ("    Huffman groups:", bzipBlock.huffman_groups)
             
-        start += 3
-        selectors_used = dataChain.get(start, start + 16).toInt()
-        print ("    Selectors used:",
-            selectors_used)
+        start += 4
+        bzipBlock.selectors_used = dataChain.get(start, start + 15).toInt()
+        print ("    Selectors used:", bzipBlock.selectors_used)
             
-        start += 16
+        start += 15
         
         print ("    No idea ...")
+        # TO-DO
         
+        # Compressed block
+        if iBlock == len(blocks) - 1:
+            end = blocks_end[0]
+        else:
+            end = blocks[iBlock + 1]
+        
+        bzipBlock.compressed = dataChain.get(start, end)
+        
+        # Block end, append to the list
+        bzipBlocks.append(bzipBlock)
     
     # Global CRC_32
     CRC_position = blocks_end[0] + 48
@@ -174,6 +207,8 @@ def read_bz2(path):
     if (CRC_position + 31)%8 != 0:
         print ('Padding detected:', 
             dataChain.get(CRC_position+32, len(dataChain)))
+            
+    return ('bz2', bzipBlocks)
     
 # TEST
 read_bz2('./input/Test.txt.bz2')

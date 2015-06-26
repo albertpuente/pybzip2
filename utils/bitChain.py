@@ -2,6 +2,7 @@
 Work with bits/bytes/hex/ints without pain
 '''
 import binascii
+from utils.convert import *
 
 class bitChain:
     def __init__(self, inputData = [], bitLength = None):
@@ -34,6 +35,8 @@ class bitChain:
             self.chain += new
         elif type(data) == bitChain:
             self.chain += data.bits()
+        elif type(data) == list:
+            self.append(intlist2bytes(data))
         else:
             raise Exception("bitChain.append type:",type(data),'not supported')
         
