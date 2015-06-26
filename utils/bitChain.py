@@ -9,9 +9,6 @@ class bitChain:
         if inputData:
             self.append(inputData, bitLength)
         
-    def length(self):
-        return len(self.chain)
-
     def append(self, data, bitLength = None):
         if type(data) == str:
             for x in data:
@@ -64,7 +61,7 @@ class bitChain:
         return int.from_bytes(data, byteorder = 'big')
         
     def get(self, start, end):
-        if start < 0 or end > self.length() or start >= end:
+        if start < 0 or end > len(self) or start >= end:
             raise Exception('bitChain.get with wrong parameters')
         new = bitChain()
         new.chain = self.chain[start:end]
@@ -77,3 +74,6 @@ class bitChain:
     def __str__(self):
         s = str(''.join([str(b) for b in self.chain]))
         return s
+        
+    def __len__(self):
+        return len(self.chain)

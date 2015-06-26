@@ -73,8 +73,8 @@ def write_bz2(path, blocks):
     dataChain.append(crc32(streamChain.toBytes()), 32)
     
     # Padding
-    if dataChain.length()%8 != 0:
-        dataChain.append(0, 8 - dataChain.length()%8)
+    if len(dataChain)%8 != 0:
+        dataChain.append(0, 8 - len(dataChain)%8)
     
     # Write to file
     file = open(path, 'wb+')
@@ -173,7 +173,7 @@ def read_bz2(path):
     # Padding
     if (CRC_position + 31)%8 != 0:
         print ('Padding detected:', 
-            dataChain.get(CRC_position+32, dataChain.length()))
+            dataChain.get(CRC_position+32, len(dataChain)))
     
 # TEST
 read_bz2('./input/Test.txt.bz2')
