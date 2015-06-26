@@ -76,5 +76,54 @@ def write_bz2(path, blocks):
         dataChain.append(0, 8 - dataChain.length()%8)
     
     # Write to file
-    with open(path, 'bw+') as f: 
-        f.write(dataChain.toBytes())
+    file = open(path, 'wb+')
+    file.write(dataChain.toBytes())
+    file.close()
+    
+def find_start(sl,l):
+    results = []
+    sll = len(sl)
+    for ind in (i for i,e in enumerate(l) if e == sl[0]):
+        if l[ind:ind+sll] == sl:
+            results.append(ind)
+    return results
+
+def read_bz2(path):
+    file = open(path, 'rb')
+    inputData = file.read()
+    dataChain = bitChain(inputData)
+    file.close()
+    
+    if inputData == dataChain.toBytes():
+        print ('File converted to bitChain correctly.')
+        # print (dataChain.toBytes())
+    
+    # File signature
+    signature = dataChain.get(0, 31).toBytes()
+    if signature != b'BZh9':
+        raise Exception('Wrong file signature:', signature)
+    else:
+        print ('File signature recognised:', signature)
+        
+    # Search blocks starts
+    pi = bitChain(0x314159265359, 48)
+    blocks = find_start(pi.bits(), dataChain.bits())
+    print ('Blocks begin at positions:', blocks)
+    
+    # Search blocks end
+    sqrt_pi = bitChain(0x177245385090, 48)
+    blocks_end = find_start(sqrt_pi.bits(), dataChain.bits())
+    print ('Blocks end at position:', blocks_end)
+    
+    # Global CRC_32
+    CRC_position = blocks_end[0] + 48
+    globalCRC = dataChain.get(CRC_position, CRC_position+31)
+    print ('Global CRC is:', globalCRC.toInt())
+    
+    # Padding
+    if (CRC_position + 31)%8 != 0:
+        print ('Padding detected:', 
+            dataChain.get(CRC_position+32, dataChain.length()-1))
+    
+# TEST
+read_bz2('input/Test.txt.bz2')

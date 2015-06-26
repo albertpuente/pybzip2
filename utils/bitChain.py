@@ -4,8 +4,16 @@ Work with bits/bytes/hex/ints without pain
 from utils.convert import *
 
 class bitChain:
-    def __init__(self):
+    def __init__(self, inputData = [], bitLength = None):
         self.chain = []
+        if inputData:
+            if bitLength:
+                self.append(inputData, bitLength)
+            else:
+                if type(inputData) != bytes:
+                    raise Exception('bitChain must initialized with bytes'\
+                    ' when no bitLength is specified')
+                self.append(inputData, len(inputData)*8)
         
     def length(self):
         return len(self.chain)
@@ -14,7 +22,7 @@ class bitChain:
         if type(data) == str:
             data = str.encode(data)
         if type(data) == bytes: 
-            data = int.from_bytes(data, byteorder = 'little')
+            data = int.from_bytes(data, byteorder = 'big')
         if type(data) != int:
             raise Exception("bitChain.append expects int or bytes type")
             
@@ -39,6 +47,21 @@ class bitChain:
         
     def bits(self):
         return self.chain
+        
+    def toHex(self):
+        data = self.toBytes()
+        return binascii.hexlify(bytearray(data))
+    
+    def toInt(self):
+        data = self.toBytes()
+        return int.from_bytes(data, byteorder = 'big')
+        
+    def get(self, start, end):
+        if start < 0 or end >= self.length() or start > end:
+            raise Exception('bitChain.get with wrong parameters')
+        new = bitChain()
+        new.chain = self.chain[start:end+1]
+        return new
         
     def __str__(self):
         s = str(''.join([str(b) for b in self.chain]))
