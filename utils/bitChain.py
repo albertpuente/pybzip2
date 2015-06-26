@@ -22,21 +22,27 @@ class bitChain:
         if type(data) == str:
             data = str.encode(data)
         if type(data) == bytes: 
-            data = int.from_bytes(data, byteorder = 'big')
-        if type(data) != int:
-            raise Exception("bitChain.append expects int or bytes type")
+            ints = list(data)
+            for i in ints:
+                bits = "{0:b}".format(i)
+                bits = "0"*(8-len(bits)) + bits
+                self.chain += [int(x) for x in bits]
             
-        new = []
-        while bitLength > 0:
-            if data%2: new.insert(0, 1)
-            else: new.insert(0, 0)
-            bitLength -= 1
-            data >>= 1
-        self.chain += new
+        elif type(data) == int:
+            new = []
+            while bitLength > 0:
+                if data%2: new.insert(0, 1)
+                else: new.insert(0, 0)
+                bitLength -= 1
+                data >>= 1
+            self.chain += new
+        else:
+            raise Exception("bitChain.append expects int or bytes type")
+        
 
     def toBytes(self):
-        if len(self.chain)%8 != 0:
-            print ("Warning: bitChain is not complete (byte whole)")
+        #if len(self.chain)%8 != 0:
+            #print ("Warning: bitChain is not complete (byte whole)")
             
         B = b""
         ints = []

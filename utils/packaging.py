@@ -2,7 +2,7 @@
 Bytes for constructing .bz2 streams
 '''
 import binascii
-from utils.convert import *
+from utils.convert import * 
 
 def crc32(data): # 4 Bytes
     if type(data) == list:
@@ -91,12 +91,14 @@ def find_start(sl,l):
 def read_bz2(path):
     file = open(path, 'rb')
     inputData = file.read()
-    dataChain = bitChain(inputData)
-    file.close()
     
+    dataChain = bitChain(inputData)
+
+    file.close()
     if inputData == dataChain.toBytes():
         print ('File converted to bitChain correctly.')
-        # print (dataChain.toBytes())
+    else:
+        raise Exception('bitChain class is not working!')
     
     # File signature
     signature = dataChain.get(0, 31).toBytes()
@@ -114,6 +116,50 @@ def read_bz2(path):
     sqrt_pi = bitChain(0x177245385090, 48)
     blocks_end = find_start(sqrt_pi.bits(), dataChain.bits())
     print ('Blocks end at position:', blocks_end)
+    
+    # For each block
+    for start in blocks:
+        print ("BLOCK at position", start)
+        print ("    PI:", 
+            dataChain.get(start, start + 47).toHex())
+        
+        start += 48
+        print ("    Block CRC",
+            dataChain.get(start, start + 31).toInt())
+            
+        start += 32
+        print ("    Randomized:",
+            dataChain.get(start, start))
+            
+        start += 1
+        print ("    BWT Start pointer:",
+            dataChain.get(start, start+23).toInt())
+            
+        start += 24
+        print ("    Huffman used map:",
+            dataChain.get(start, start+15))
+            
+        nBitMaps = sum(dataChain.get(start, start+15).bits())
+        print ("    nBitMaps:", nBitMaps)
+        
+        start += 16
+        for i in range (0, nBitMaps):
+            print ("    Bitmap",i,":",
+                dataChain.get(start, start+15))
+            start += 16
+            
+        print ("    Huffman groups:",
+            dataChain.get(start, start + 2).toInt())
+            
+        start += 3
+        selectors_used = dataChain.get(start, start + 15).toInt()
+        print ("    Selectors used:",
+            selectors_used)
+            
+        start += 16
+        
+        print ("    No idea ...")
+        
     
     # Global CRC_32
     CRC_position = blocks_end[0] + 48
