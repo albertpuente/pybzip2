@@ -9,6 +9,7 @@ import utils.convert as uc
 from methods.MTF import *
 from methods.RLE import *
 from methods.BWT import *
+from methods.HuffmanT import *
 from methods.other import *
 
 class pybzip2compressor:
@@ -28,6 +29,9 @@ class pybzip2compressor:
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
         # Huffman coding
+        # res = huffman_encode(res)
+        # print(res)
+        
         # Selection between multiple Huffman tables
         # Unary base 1 encoding of Huffman table selection
         # Delta encoding (Δ) of Huffman code bit-lengths
