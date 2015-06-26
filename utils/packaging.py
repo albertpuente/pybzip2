@@ -176,4 +176,4 @@ def read_bz2(path):
             dataChain.get(CRC_position+32, dataChain.length()-1))
     
 # TEST
-read_bz2('./input/subs.srt.bz2')
+read_bz2('./input/Test.txt.bz2')

@@ -7,13 +7,7 @@ class bitChain:
     def __init__(self, inputData = [], bitLength = None):
         self.chain = []
         if inputData:
-            if bitLength:
-                self.append(inputData, bitLength)
-            else:
-                if type(inputData) != bytes:
-                    raise Exception('bitChain must initialized with bytes'\
-                    ' when no bitLength is specified')
-                self.append(inputData, len(inputData)*8)
+            self.append(inputData, bitLength)
         
     def length(self):
         return len(self.chain)
