@@ -64,11 +64,15 @@ class bitChain:
         return int.from_bytes(data, byteorder = 'big')
         
     def get(self, start, end):
-        if start < 0 or end >= self.length() or start > end:
+        if start < 0 or end > self.length() or start >= end:
             raise Exception('bitChain.get with wrong parameters')
         new = bitChain()
-        new.chain = self.chain[start:end+1]
+        new.chain = self.chain[start:end]
         return new
+        
+    # [] operator
+    def __getitem__(self, index):
+        return self.chain[index]
         
     def __str__(self):
         s = str(''.join([str(b) for b in self.chain]))

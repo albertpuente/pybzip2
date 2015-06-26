@@ -94,7 +94,7 @@ def read_bz2(path):
     inputData = file.read()
     
     dataChain = bitChain(inputData)
-
+    
     file.close()
     if inputData == dataChain.toBytes():
         print ('File converted to bitChain correctly.')
@@ -102,13 +102,13 @@ def read_bz2(path):
         raise Exception('bitChain class is not working!')
     
     # File signature
-    signature = dataChain.get(0, 23).toBytes()
+    signature = dataChain.get(0, 24).toBytes()
     if signature != b'BZh':
         raise Exception('Wrong file signature:', signature)
     else:
         print ('File signature recognised:', signature)
         
-    blockSize = dataChain.get(24,31).toBytes()
+    blockSize = dataChain.get(24,32).toBytes()
     print ("Block size:", blockSize)
         
     # Search blocks starts
@@ -125,38 +125,38 @@ def read_bz2(path):
     for start in blocks:
         print ("BLOCK at position", start)
         print ("    PI:", 
-            dataChain.get(start, start + 47).toHex())
+            dataChain.get(start, start + 48).toHex())
         
         start += 48
         print ("    Block CRC",
-            dataChain.get(start, start + 31).toInt())
+            dataChain.get(start, start + 32).toInt())
             
         start += 32
         print ("    Randomized:",
-            dataChain.get(start, start))
+            dataChain.get(start, start+1))
             
         start += 1
         print ("    BWT Start pointer:",
-            dataChain.get(start, start+23).toInt())
+            dataChain.get(start, start+24).toInt())
             
         start += 24
         print ("    Huffman used map:",
-            dataChain.get(start, start+15))
+            dataChain.get(start, start+16))
             
-        nBitMaps = sum(dataChain.get(start, start+15).bits())
+        nBitMaps = sum(dataChain.get(start, start+16).bits())
         print ("    nBitMaps:", nBitMaps)
         
         start += 16
         for i in range (0, nBitMaps):
             print ("    Bitmap",i,":",
-                dataChain.get(start, start+15))
+                dataChain.get(start, start+16))
             start += 16
             
         print ("    Huffman groups:",
-            dataChain.get(start, start + 2).toInt())
+            dataChain.get(start, start + 3).toInt())
             
         start += 3
-        selectors_used = dataChain.get(start, start + 15).toInt()
+        selectors_used = dataChain.get(start, start + 16).toInt()
         print ("    Selectors used:",
             selectors_used)
             
@@ -167,13 +167,13 @@ def read_bz2(path):
     
     # Global CRC_32
     CRC_position = blocks_end[0] + 48
-    globalCRC = dataChain.get(CRC_position, CRC_position+31)
+    globalCRC = dataChain.get(CRC_position, CRC_position+32)
     print ('Global CRC is:', globalCRC.toInt())
     
     # Padding
     if (CRC_position + 31)%8 != 0:
         print ('Padding detected:', 
-            dataChain.get(CRC_position+32, dataChain.length()-1))
+            dataChain.get(CRC_position+32, dataChain.length()))
     
 # TEST
 read_bz2('./input/Test.txt.bz2')
