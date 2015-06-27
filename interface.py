@@ -168,6 +168,7 @@ class Application(tk.Frame):
             
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
+        self.saveButton.configure(state='normal')
     
     def decompressAction(self):
         i = 0

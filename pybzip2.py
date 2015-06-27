@@ -33,6 +33,7 @@ class pybzip2compressor:
         # Huffman coding
         coded_data, huffman_lengths, table_order = huffman_encode(res)
         self.content = bitChain(''.join(coded_data))
+        self.huffman_groups = len(huffman_lengths)
         
         # Selection between multiple Huffman tables
         self.selectors_used = bitChain(len(table_order), 15)
