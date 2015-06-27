@@ -62,7 +62,7 @@ def write_bz2(path, bzipBlocks):
         blockChain.append(bzipBlock.selectors_used, 15)
         
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
-        # blockChain.append(TODO, TODO) # 1..6
+        blockChain.append(self.selector_list) # 1..6*selectors_used
         
         # 0..20 starting bit length for Huffman deltas
         blockChain.append(bzipBlock.delta_bit_length[0][0], 5)
