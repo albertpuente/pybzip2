@@ -31,3 +31,12 @@ def mtf_decode(coding) :
         recent.pop(0)
         recent.insert(idx, c)
     return msg[::-1]
+
+def mtf_decode2(coding, symbols):
+    res = []
+    for i in range(len(coding)):
+        idx = coding[i]
+        res += [symbols[idx]]
+        symbols.pop(idx)
+        symbols.insert(0, res[-1])
+    return res
