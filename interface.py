@@ -206,11 +206,25 @@ class Application(tk.Frame):
                 icon = 'error')
         
     def testDecompressionAction(self):
-        print("TODO: test decompression (optional)!")
+        print("Test decompression")
         
         path = filedialog.askopenfilename()
-        # originalData = andres.read(path)
-        # self.info = andres.compare(originalData, self.decompression)
+        if path != '':
+            print ("Loading file from: ", path)
+            (fileType, rawBlocks) = read_bz2(path)
+
+            if fileType == 'raw':
+                original = [block.msg for block in rawBlocks]
+                decompression = [x.decompressed for x in self.bzip2Blocks]
+                if original == decompression:
+                    messagebox.showinfo('Validation', 
+                        'Compression/decompression OK.', icon = 'info')
+                else :
+                    messagebox.showinfo('Validation', 
+                        'Compression/decompression error.', icon = 'error')
+            else:
+                print ("An uncompressed original file is required")
+
         
     def saveCompressionAction(self):
         print("Saving compression...")
