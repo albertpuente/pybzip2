@@ -13,11 +13,11 @@ def bwt_encode(msg) :
         msg = msg[1:] + msg[:1]
     all_rots.sort()
 
-    return [row[-1] for row in all_rots], all_rots.index(msg)
+    return [row[-1] for row in all_rots], all_rots.index(msg) + 1
 
 def bwt_decode(coding) :
     coded = coding[0]
-    index = coding[1]
+    index = coding[1] - 1
     permutation = sorted((t, i) for i, t in enumerate(coded))
     msg = []
     for _ in coded :
