@@ -100,6 +100,13 @@ def write_bz2(path, bzipBlocks):
     file.write(dataChain.toBytes())
     file.close()
     
+def write_file(path, bzipBlocks):
+    # Write to file
+    file = open(path, 'wb+')
+    for block in bzipBlocks:
+        file.write(block.decompressed)
+    file.close()
+    
 def find_start(sl,l):
     results = []
     sll = len(sl)
@@ -140,7 +147,7 @@ def read_bz2(path):
         print ('File signature recognised:', signature)
         
     blockSize = dataChain.get(24,32).toBytes()
-    print ("Block size:", blockSize)
+    print ("Block size:", int(blockSize)*100000,"uncompressed Bytes")
         
     # Search blocks starts
     pi = bitChain(0x314159265359, 48)
@@ -195,10 +202,11 @@ def read_bz2(path):
             
         start += 15
         
-        # Selector_list?
+        # Selector_list???????????????????????
         print ("    No idea ...")
-        # start += 1..6
-        start += 1 # Patillada
+        # start += 1..6 * bzipBlock.selectors_used
+        start += 6 # Patillada
+        # End?????????????????????????????????
         
         # delta_bit_length
         bzipBlock.delta_bit_length = []

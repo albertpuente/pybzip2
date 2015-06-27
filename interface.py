@@ -121,11 +121,12 @@ class Application(tk.Frame):
             if not result:
                 return
             else:
+                self.compressButton.configure(state = 'disabled')
+                self.decompressButton.configure(state = 'disabled')
                 self.testButton.configure(state = 'disabled')
                 self.testDecButton.configure(state = 'disabled')
                 self.saveButton.configure(state = 'disabled')
                 self.saveDecButton.configure(state = 'disabled')
-                
         
         path = filedialog.askopenfilename()
         if path != '':
@@ -133,11 +134,11 @@ class Application(tk.Frame):
             (fileType, self.bzip2Blocks) = read_bz2(path)
             print ("Done")
             
-            if (fileType == 'raw'):
+            if fileType == 'raw':
                 self.compressButton.configure(state='normal')
                 
                 
-            elif (fileType == 'bz2'):
+            elif fileType == 'bz2':
                 self.decompressButton.configure(state='normal')
             else:
                 raise Exception('Unknown filetype')
@@ -197,16 +198,25 @@ class Application(tk.Frame):
         # self.info = andres.compare(originalData, self.decompression)
         
     def saveCompressionAction(self):
-        print("TODO: save compression!")
-        path = filedialog.asksaveasfilename()
-        print(path)
-        # andres.save(self.compression, path)
+        print("Saving compression...")
+        
+        options = {}
+        options['filetypes'] = [('bzip2', '.bz2')]
+        options['initialfile'] = 'compressed file'
+        
+        path = filedialog.asksaveasfilename(**options)
+        if path != '':
+            write_bz2(path, self.bzip2Blocks)
         
     def saveDecompressionAction(self):
-        print("TODO: save decompression!")
-        path = filedialog.asksaveasfilename()
-        print(path)
-        # andres.save(self.decompression, path)
+        print("Saving file...")
+        options = {}
+        options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
+        options['initialfile'] = 'name'
+        
+        path = filedialog.asksaveasfilename(**options)
+        if path != '':
+            write_bz2(path, self.bzip2Blocks)
 
 def launchInterface():
     root = tk.Tk()
