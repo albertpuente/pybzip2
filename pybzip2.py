@@ -48,7 +48,7 @@ class pybzip2compressor:
         
         # Sparse bit array showing which symbols are used
         # res is the source before huffman
-        self.bit_maps = sparse(set(self.msg))
+        self.bit_maps = sparse(set(res))
 
     def decompress(self):
         if self.content is None:
