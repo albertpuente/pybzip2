@@ -1,12 +1,15 @@
 '''
-Bytes for constructing .bz2 streams
+Functions for constructing .bz2 streams
 '''
 import binascii
 from utils.bitChain import *
 from utils.convert import *
 from pybzip2 import *
 
-def crc32(data): # 4 Bytes
+'''
+Returns the CRC32 (4 Bytes) of a sequence of bytes
+'''
+def crc32(data):
     if type(data) == list:
         data = intlist2bytes(data)
     elif type(data) != bytes:
@@ -14,6 +17,9 @@ def crc32(data): # 4 Bytes
         
     return binascii.crc32(data)
     
+'''
+Writes a .bz2 file using bzipBlocks (class pybzip2compressor)
+'''
 def write_bz2(path, bzipBlocks):
     TODO = 0 # Provisional
     
@@ -100,6 +106,9 @@ def write_bz2(path, bzipBlocks):
     file.write(dataChain.toBytes())
     file.close()
     
+'''
+Writes a decompressed file using bzipBlocks (class pybzip2compressor)
+'''
 def write_file(path, bzipBlocks):
     # Write to file
     file = open(path, 'wb+')
@@ -107,6 +116,9 @@ def write_file(path, bzipBlocks):
         file.write(block.decompressed)
     file.close()
     
+'''
+Finds the start positions of a sequence of bits that appear in a larger sequence
+'''
 def find_start(sl,l):
     results = []
     sll = len(sl)
@@ -115,6 +127,11 @@ def find_start(sl,l):
             results.append(ind)
     return results
 
+'''
+Reads a file and creates a list of bzipBlocks (class pybzip2compressor)
+Depending on the file that is read, the bzipBlocks will contain compressed or
+raw data
+'''
 def read_bz2(path):
     bzipBlocks = []
     file = open(path, 'rb')
@@ -132,7 +149,7 @@ def read_bz2(path):
     
     # File signature
     signature = dataChain.get(0, 24).toBytes()
-    if signature != b'BZh':
+    if signature != b'BZh': # bzipBlocks will be used to compress data
         print('Unknown signature: raw file mode')
         
         NB = 900000 # Blocks of 900KB (maximum)
@@ -141,9 +158,9 @@ def read_bz2(path):
         
         bzipBlocks = [pybzip2compressor(block) for block in blocks]
         
-        return ('raw', bzipBlocks)
+        return ('raw', bzipBlocks) # Notice this return!
         
-    else:
+    else: # bzipBlocks will be used to decompress data
         print ('File signature recognised:', signature)
         
     blockSize = dataChain.get(24,32).toBytes()
