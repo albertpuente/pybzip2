@@ -173,7 +173,7 @@ class Application(tk.Frame):
     def decompressAction(self):
         i = 0
         for block in self.bzip2Blocks:
-            print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
+            print ('Decompressing block:', i+1,'of',len(self.bzip2Blocks))
             block.decompress()
             i += 1
             
