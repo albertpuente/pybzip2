@@ -78,7 +78,7 @@ class pybzip2compressor:
         res = rle_decode(res)
         self.decompressed = res
 
-file_name = "input.txt"
+file_name = "Physics.cu"
 file_path = "input/" + file_name
 file_size = os.path.getsize(file_path)
 
