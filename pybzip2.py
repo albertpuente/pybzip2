@@ -30,8 +30,8 @@ class pybzip2compressor:
         res = rle2_encode(res)
         
         # Huffman coding
-        enc, huffman_table = huffman_encode(res)    
-        self.compressed = bitChain(''.join(enc))
+        coded_data, huffman_lengths = huffman_encode(res)
+        self.compressed = bitChain(''.join(coded_data))
         
         # Selection between multiple Huffman tables
         # ?
@@ -40,10 +40,11 @@ class pybzip2compressor:
         # ?
         
         # Delta encoding (Δ) of Huffman code bit-lengths
-        self.delta_bit_length = delta_encode(huffman_table)
+        self.delta_bit_length = delta_encode(huffman_lengths)
         
         # Sparse bit array showing which symbols are used
-        self.bit_maps = sparse(res)
+        # res is the source before huffman
+        self.bit_maps = sparse(set(self.msg))
 
     def decompress(self):
         if self.compressed is None:
