@@ -24,8 +24,9 @@ class pybzip2compressor:
         res, bwt_column = bwt_encode(res)
         self.bwt_column = bwt_column
         # Move to front (MTF) transform
-        res, mtf_stack = mtf_encode(res)
-        self.mtf_stack = mtf_stack
+        res, _ = mtf_encode(res)
+        # self.mtf_stack = mtf_stack
+        
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
         
@@ -65,7 +66,9 @@ class pybzip2compressor:
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
         # Move to front (MTF) transform
-        res = mtf_decode((res, self.mtf_stack))
+        symbols = unsparse(self.bit_maps)
+        res = mtf_decode(res, symbols)
+        
         # Burrows–Wheeler transform (BWT) or block sorting
         res = bwt_decode((res, self.bwt_column))
         # Run-length encoding (RLE) of initial data
@@ -83,7 +86,6 @@ original = bytes
 
 C = pybzip2compressor(list(bytes))
 C.compress()
-'''
 C.decompress()
 
 # print(list(original)[40:])
@@ -98,4 +100,3 @@ else :
 # print(uc.intlist2bytes(C.decompressed))
 
 print("Compression ratio:", (1 - (len(C.compressed) / file_size)) * 100, "%")
-'''
