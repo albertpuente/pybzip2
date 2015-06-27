@@ -28,17 +28,22 @@ class pybzip2compressor:
         self.mtf_stack = mtf_stack
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
+        
         # Huffman coding
-        '''
-        enc = huffman_encode(res)
-        res = enc[0]
-        self.Hufftable = enc[1]
-        '''
+        enc, huffman_table = huffman_encode(res)    
+        self.compressed = bitChain(''.join(enc))
+        
         # Selection between multiple Huffman tables
+        # ?
+        
         # Unary base 1 encoding of Huffman table selection
+        # ?
+        
         # Delta encoding (Δ) of Huffman code bit-lengths
+        self.delta_bit_length = delta_encode(huffman_table)
+        
         # Sparse bit array showing which symbols are used
-        self.compressed = res
+        self.bit_maps = sparse(res)
 
     def decompress(self):
         if self.compressed is None:
@@ -50,9 +55,12 @@ class pybzip2compressor:
         # Selection between multiple Huffman tables
         # Huffman coding
         res = self.compressed
-        '''
-        res = huffman_decode(res, self.Hufftable, [])
-        # necessito la llista sparse de simbols utilitzats al bloc
+        
+        self.huffman_table = delta_decode(self.delta_bit_length)
+        
+        res = huffman_decode(res, self.huffman_table, [])
+        
+        
         '''
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
@@ -75,6 +83,7 @@ original = bytes
 
 C = pybzip2compressor(list(bytes))
 C.compress()
+'''
 C.decompress()
 
 # print(list(original)[40:])
@@ -89,3 +98,4 @@ else :
 # print(uc.intlist2bytes(C.decompressed))
 
 print("Compression ratio:", (1 - (len(C.compressed) / file_size)) * 100, "%")
+'''

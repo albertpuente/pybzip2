@@ -39,15 +39,10 @@ def write_bz2(path, bzipBlocks):
         # Starting pointer into BWT for after untransform
         blockChain.append(bzipBlock.bwt_start_pointer, 24)
         
-        # Bitmap, of ranges of 16 bytes, present/not present        
-        blockChain.append(bzipBlock.huffman_used_map, 16)
-        
+        # Bitmaps, of ranges of 16 bytes, present/not present + 
         # Bitmap, of symbols used, present/not present (multiples of 16)
-        HUM = bitChain(bzipBlock.huffman_used_map)
-        nBitMaps = sum(HUM.bits())
-        for i in range (0, nBitMaps):
-            blockChain.append(bzipBlock.bit_maps[i], 16) # 0..256
-        
+        blockChain.append(bzipBlock.bitmaps)
+
         # 2..6 number of different Huffman tables in use
         blockChain.append(bzipBlock.huffman_groups, 3)
         
@@ -64,10 +59,23 @@ def write_bz2(path, bzipBlocks):
         # blockChain.append(TODO, TODO) # 1..6
         
         # 0..20 starting bit length for Huffman deltas
-        # blockChain.append(TODO, 5)
+        blockChain.append(bzipBlock.delta_bit_length[0], 5)
         
         # delta_bit_length
-        # blockChain.append(TODO, TODO) # 1..40
+        lengths = bzipBlock.delta_bit_length
+        lastNum = lengths[0]
+        i = 1
+        while i < len(lengths):
+            if lengths[i] == lastNum: # Next symbol
+                blockChain.append('0')
+                lastNum = lengths[i]
+                i += 1
+            elif lengths[i] > lastNum:
+                blockChain.append('0') 
+                lengths[i] -= 1
+            else: # lengths[i] < lastNum:
+                blockChain.append('1') 
+                lengths[i] += 1
         
         # Contents
         blockChain.append(bzipBlock.compressed) # 2bits..900KB
@@ -166,20 +174,17 @@ def read_bz2(path):
         print ("    BWT Start pointer:",bzipBlock.bwt_start_pointer)
         
         start += 24
-        bzipBlock.huffman_used_map = dataChain.get(start, start+16)
-        print ("    Huffman used map:", bzipBlock.huffman_used_map)
-            
-        bzipBlock.n_bit_maps = sum(dataChain.get(start, start+16).bits())
-        print ("    n_bit_maps:", bzipBlock.n_bit_maps)
-        
+        bzipBlock.bit_maps = dataChain.get(start, start+16)
+
         start += 16
-        bzipBlock.bit_maps = []
-        for i in range (0, bzipBlock.n_bit_maps):
-            bzipBlock.bit_maps.append(dataChain.get(start, start+16))
-            print ("    Bitmap",i,":",
-                dataChain.get(start, start+16))
-            start += 16
-            
+        N = sum(bzipBlock.bit_maps.bits())
+        huffman_used_bitmaps = dataChain.get(start, start+16*N) 
+        bzipBlock.bit_maps.append(huffman_used_bitmaps)
+        print ("    Huffman used map (sparse):", bzipBlock.bit_maps)
+        nSymbols = sum(huffman_used_bitmaps.bits())
+        print ("    N symbols: ", nSymbols)
+        
+        start += 16*N
         bzipBlock.huffman_groups = dataChain.get(start, start + 3).toInt()
         print ("    Huffman groups:", bzipBlock.huffman_groups)
             
@@ -189,7 +194,29 @@ def read_bz2(path):
             
         start += 15
         
+        # Selector_list?
         print ("    No idea ...")
+        # start += 1..6
+        
+        # delta_bit_length
+        bzipBlock.delta_bit_length = []
+        
+        firstLength = dataChain.get(start, start + 6).toInt()
+        bzipBlock.delta_bit_length.append(firstLength)
+        start += 6
+        
+        lastNum = firstLength
+        for i in range (1, nSymbols):
+            while dataChain[start] == 1:
+                start += 1
+                if dataChain[start] == 0:
+                    lastNum += 1
+                else: 
+                    lastNum -= 1
+            start += 1
+            bzipBlock.delta_bit_length.append(lastNum)
+            
+
         # TO-DO
         
         # Compressed block
