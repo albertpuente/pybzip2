@@ -31,7 +31,7 @@ class pybzip2compressor:
         res = rle2_encode(res)
         
         # Huffman coding
-        coded_data, huffman_lengths = huffman_encode(res)
+        coded_data, huffman_lengths, table_order = huffman_encode(res)
         self.compressed = bitChain(''.join(coded_data))
         
         # Selection between multiple Huffman tables
@@ -61,6 +61,7 @@ class pybzip2compressor:
         
         self.huffman_table = delta_decode(self.delta_bit_length)
         
+        # cal passar table_order
         res = huffman_decode(res, self.huffman_table, [])
         
         # Run-length encoding (RLE) of MTF result
