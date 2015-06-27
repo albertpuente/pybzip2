@@ -197,6 +197,7 @@ def read_bz2(path):
         # Selector_list?
         print ("    No idea ...")
         # start += 1..6
+        start += 1 # Patillada
         
         # delta_bit_length
         bzipBlock.delta_bit_length = []
@@ -215,6 +216,7 @@ def read_bz2(path):
                     lastNum -= 1
             start += 1
             bzipBlock.delta_bit_length.append(lastNum)
+        print ("    List of lengths: ",bzipBlock.delta_bit_length)
             
 
         # TO-DO
