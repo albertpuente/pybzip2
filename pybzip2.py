@@ -60,8 +60,6 @@ class pybzip2compressor:
         
         res = huffman_decode(res, self.huffman_table, [])
         
-        
-        '''
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
         # Move to front (MTF) transform
