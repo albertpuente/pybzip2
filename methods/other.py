@@ -19,8 +19,8 @@ def unarize(lengths):
     ex: [1,2,3] -> 10110111
     returns a bitChain
     '''
-    if not all(lengths) :
-        raise Exception("Null length found, please use strictly positive numbers")
+    if any(map(lambda x: x < 0, lengths)) :
+        raise Exception("Negative length found, please use positive numbers")
     return bitChain('0'.join(x*'1' for x in lengths))
 
 

@@ -237,8 +237,8 @@ def read_bz2(path):
             start += 1
 
         # undo the mtf, pass the list of possible values (we have up to 6 huffman tables)
-        selector_list = mtf_decode2(selector_list, [1,2,3,4,5,6])
-        bzipBlock.table_order = [t - 1 for t in selector_list]
+        selector_list = mtf_decode2(selector_list, list(range(6)))
+        bzipBlock.table_order = selector_list
 
         # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
