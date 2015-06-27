@@ -70,12 +70,14 @@ def write_bz2(path, bzipBlocks):
                 blockChain.append('0')
                 lastNum = lengths[i]
                 i += 1
-            elif lengths[i] > lastNum:
-                blockChain.append('0') 
-                lengths[i] -= 1
-            else: # lengths[i] < lastNum:
-                blockChain.append('1') 
-                lengths[i] += 1
+            else:
+                blockChain.append('1')
+                if lengths[i] > lastNum:
+                    blockChain.append('0') 
+                    lengths[i] -= 1
+                else: # lengths[i] < lastNum:
+                    blockChain.append('1') 
+                    lengths[i] += 1
         
         # Contents
         blockChain.append(bzipBlock.compressed) # 2bits..900KB

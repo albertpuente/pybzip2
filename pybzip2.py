@@ -50,6 +50,7 @@ class pybzip2compressor:
             raise Exception("Trying to decompress without having compressed")
 
         # Sparse bit array showing which symbols are used
+        
         # Delta encoding (Δ) of Huffman code bit-lengths
         # Unary base 1 encoding of Huffman table selection
         # Selection between multiple Huffman tables
