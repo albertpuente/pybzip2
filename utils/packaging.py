@@ -62,7 +62,12 @@ def write_bz2(path, bzipBlocks):
         blockChain.append(bzipBlock.selectors_used, 15)
         
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
-        blockChain.append(bzipBlock.selector_list) # 1..6*selectors_used
+        # start by adding 1 to the indices for the unary encoding to work
+        table_order = bzipBlock.table_order
+        table_order = [t + 1 for t in table_order]
+        # apply mtf
+        mtf_tables_used, _ = mtf_encode(table_order)
+        blockChain.append(unarize(mtf_tables_used)) # 1..6*selectors_used
         
         
         # delta_bit_length
@@ -74,11 +79,11 @@ def write_bz2(path, bzipBlocks):
             i = 1
             # Deltas
             while i < len(deltas):
-                if lengths[i] == lastLength: # Next symbol
+                if deltas[i] == lastLength: # Next symbol
                     blockChain.append('0')
                     i += 1
                 else:
-                    if lengths[i] > lastLength:
+                    if deltas[i] > lastLength:
                         blockChain.append('10')
                         lastLength += 1
                     else: # lengths[i] < lastNum:
@@ -221,11 +226,20 @@ def read_bz2(path):
         start += 15
         
         # Selector list
-        print ("    No idea ...")
-        # start += 1..6 * bzipBlock.selectors_used
-        start += 6 # Patillada
-        # End?????????????????????????????????
-        
+        selector_list = [0]
+        i = 0
+        while i < range(bzipBlock.selectors_used):
+            if dataChain.get(start, start+1).toInt() == 1:
+                selector_list[-1] += 1
+            else:
+                selector_list += [0]
+                i += 1
+            start += 1
+
+        # undo the mtf, pass the list of possible values (we have up to 6 huffman tables)
+        selector_list = mtf_decode2(selector_list, [1,2,3,4,5,6])
+        bzipBlock.table_order = [t - 1 for t in selector_list]
+
         # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
         for _ in bzipBlock.huffman_groups:

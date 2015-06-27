@@ -37,8 +37,8 @@ class pybzip2compressor:
         # Selection between multiple Huffman tables
         self.selectors_used = bitChain(len(table_order), 15)
         
-        # Unary base 1 encoding of Huffman table selectors
-        self.selector_list = unarize(table_order)
+        # store this to apply the mtf+unary encoding in packaging.py
+        self.table_order = table_order
 
         # Delta encoding (Δ) of Huffman code bit-lengths
         self.delta_bit_length = []
