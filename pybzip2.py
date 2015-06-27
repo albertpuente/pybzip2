@@ -77,7 +77,7 @@ class pybzip2compressor:
         # Run-length encoding (RLE) of initial data
         res = rle_decode(res)
         self.decompressed = res
-
+'''
 file_name = "Physics.cu"
 file_path = "input/" + file_name
 file_size = os.path.getsize(file_path)
@@ -103,3 +103,4 @@ else :
 # print(uc.intlist2bytes(C.decompressed))
 
 print("Compression ratio:", (1 - (len(C.content) / file_size)) * 100, "%")
+'''

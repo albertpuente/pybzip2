@@ -37,7 +37,7 @@ def write_bz2(path, bzipBlocks):
         blockChain.append(0x314159265359, 48)
         
         # CRC 32 of this block
-        blockChain.append(crc32(bzipBlock.compressed), 32)
+        blockChain.append(crc32(bzipBlock.content), 32)
         
         # Randomization (deprecated)
         blockChain.append(0, 1)
@@ -91,8 +91,8 @@ def write_bz2(path, bzipBlocks):
                         lastLength -= 1
         
         # Contents
-        blockChain.append(bzipBlock.compressed) # 2bits..900KB
-        streamChain.append(bzipBlock.compressed)
+        blockChain.append(bzipBlock.content) # 2bits..900KB
+        streamChain.append(bzipBlock.content)
         
         # Block end
         dataChain.chain += blockChain.chain

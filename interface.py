@@ -159,7 +159,7 @@ class Application(tk.Frame):
         
         print ('Computing ratio of compression...')
         totalSize = sum([len(block.msg) for block in self.bzip2Blocks])
-        compressedSize = sum([len(block.compressed.toBytes()) for block in self.bzip2Blocks])
+        compressedSize = sum([len(block.content.toBytes()) for block in self.bzip2Blocks])
         ratio = 100*compressedSize/totalSize
         
         messagebox.showinfo('Compression done', 
@@ -178,7 +178,7 @@ class Application(tk.Frame):
             
         print ('Computing ratio of compression...')
         totalSize = sum([len(block.decompressed.toBytes()) for block in self.bzip2Blocks])
-        compressedSize = sum([len(block.compressed.toBytes()) for block in self.bzip2Blocks])
+        compressedSize = sum([len(block.content.toBytes()) for block in self.bzip2Blocks])
         ratio = 100*compressedSize/totalSize
         
         messagebox.showinfo('Decompression done', 
