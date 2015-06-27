@@ -63,21 +63,20 @@ def write_bz2(path, bzipBlocks):
         
         # delta_bit_length
         lengths = bzipBlock.delta_bit_length
-        lastNum = lengths[0]
+        lastLength = lengths[0]
         i = 1
         while i < len(lengths):
             if lengths[i] == lastNum: # Next symbol
                 blockChain.append('0')
-                lastNum = lengths[i]
                 i += 1
             else:
                 blockChain.append('1')
                 if lengths[i] > lastNum:
                     blockChain.append('0') 
-                    lengths[i] -= 1
+                    lastLength += 1
                 else: # lengths[i] < lastNum:
                     blockChain.append('1') 
-                    lengths[i] += 1
+                    lastLength -= 1
         
         # Contents
         blockChain.append(bzipBlock.compressed) # 2bits..900KB
