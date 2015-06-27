@@ -65,24 +65,24 @@ def write_bz2(path, bzipBlocks):
         # blockChain.append(TODO, TODO) # 1..6
         
         # 0..20 starting bit length for Huffman deltas
-        blockChain.append(bzipBlock.delta_bit_length[0], 5)
+        blockChain.append(bzipBlock.delta_bit_length[0][0], 5)
         
         # delta_bit_length
-        lengths = bzipBlock.delta_bit_length
-        lastLength = lengths[0]
-        i = 1
-        while i < len(lengths):
-            if lengths[i] == lastNum: # Next symbol
-                blockChain.append('0')
-                i += 1
-            else:
-                blockChain.append('1')
-                if lengths[i] > lastNum:
-                    blockChain.append('0') 
-                    lastLength += 1
-                else: # lengths[i] < lastNum:
-                    blockChain.append('1') 
-                    lastLength -= 1
+        huffman_lengths = bzipBlock.delta_bit_length
+        for lengths in huffman_lengths:
+            lastLength = lengths[0]
+            i = 1
+            while i < len(lengths):
+                if lengths[i] == lastLength: # Next symbol
+                    blockChain.append('0')
+                    i += 1
+                else:
+                    if lengths[i] > lastLength:
+                        blockChain.append('10')
+                        lastLength += 1
+                    else: # lengths[i] < lastNum:
+                        blockChain.append('11')
+                        lastLength -= 1
         
         # Contents
         blockChain.append(bzipBlock.compressed) # 2bits..900KB
@@ -253,7 +253,7 @@ def read_bz2(path):
         else:
             end = blocks[iBlock + 1]
         
-        bzipBlock.compressed = dataChain.get(start, end)
+        bzipBlock.content = dataChain.get(start, end)
         
         # Block end, append to the list
         bzipBlocks.append(bzipBlock)

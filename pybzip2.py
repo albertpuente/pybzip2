@@ -15,7 +15,7 @@ from methods.other import *
 class pybzip2compressor:
     def __init__(self, msg = None, lvl=1):
         self.msg = msg
-        self.compressed = None
+        self.content = None
 
     def compress(self):
         # Run-length encoding (RLE) of initial data
@@ -32,23 +32,25 @@ class pybzip2compressor:
         
         # Huffman coding
         coded_data, huffman_lengths, table_order = huffman_encode(res)
-        self.compressed = bitChain(''.join(coded_data))
+        self.content = bitChain(''.join(coded_data))
         
         # Selection between multiple Huffman tables
-        # ?
+        self.selectors_used = bitChain(len(table_order), 15)
         
-        # Unary base 1 encoding of Huffman table selection
-        # ?
-        
+        # Unary base 1 encoding of Huffman table selectors
+        self.selector_list = unarize(table_order)
+
         # Delta encoding (Δ) of Huffman code bit-lengths
-        self.delta_bit_length = delta_encode(huffman_lengths)
+        self.delta_bit_length = []
+        for lengths in huffman_lengths:
+            self.delta_bit_length += [delta_encode(lengths)]
         
         # Sparse bit array showing which symbols are used
         # res is the source before huffman
         self.bit_maps = sparse(set(self.msg))
 
     def decompress(self):
-        if self.compressed is None:
+        if self.content is None:
             raise Exception("Trying to decompress without having compressed")
 
         # Sparse bit array showing which symbols are used
@@ -57,7 +59,7 @@ class pybzip2compressor:
         # Unary base 1 encoding of Huffman table selection
         # Selection between multiple Huffman tables
         # Huffman coding
-        res = self.compressed
+        res = self.content
         
         self.huffman_table = delta_decode(self.delta_bit_length)
         
@@ -100,4 +102,4 @@ else :
 # print(original)
 # print(uc.intlist2bytes(C.decompressed))
 
-print("Compression ratio:", (1 - (len(C.compressed) / file_size)) * 100, "%")
+print("Compression ratio:", (1 - (len(C.content) / file_size)) * 100, "%")
