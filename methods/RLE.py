@@ -16,7 +16,7 @@ of the run length. They're supposed to be used after MTF transform
 
 class rle_values:
     N = 4
-    runa = 0
+    runa = 256
     runb = runa + 1
 
 def rle_encode(msg) :
@@ -103,8 +103,7 @@ def rle2_encode(msg):
     transforms runs of '0's to a bijective base-2 representation
     of the run length. e.g: 0,0,0,0,0,1,3,1,0,0 -> runa,runb,1,3,1,runb
     '''
-    for m in msg:
-        if m > 0: m += 1
+
     count = 0
     coded = []
     for x in msg:

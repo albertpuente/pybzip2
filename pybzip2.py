@@ -55,28 +55,31 @@ class pybzip2compressor:
             raise Exception("Trying to decompress without having compressed")
 
         # Sparse bit array showing which symbols are used
-
+        symbols = unsparse(self.bit_maps)
         # Delta encoding (Δ) of Huffman code bit-lengths
+        huffman_lengths = []
+        for deltas in self.delta_bit_length:
+            huffman_lengths += [delta_decode(deltas)]
+
         # Unary base 1 encoding of Huffman table selection
         # Selection between multiple Huffman tables
         # Huffman coding
         res = self.content
-        
-        self.huffman_table = delta_decode(self.delta_bit_length)
-        
-        # cal passar table_order
-        res = huffman_decode(res, self.huffman_table, [])
+
+        res = huffman_decode(res, huffman_lengths,self.selectors_used, symbols)
         
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
+
         # Move to front (MTF) transform
-        symbols = unsparse(self.bit_maps)
-        res = mtf_decode(res, symbols)
+        res = mtf_decode2(res, symbols)
         
         # Burrows–Wheeler transform (BWT) or block sorting
         res = bwt_decode((res, self.bwt_column))
+
         # Run-length encoding (RLE) of initial data
         res = rle_decode(res)
+        
         self.decompressed = res
 '''
 file_name = "Physics.cu"
