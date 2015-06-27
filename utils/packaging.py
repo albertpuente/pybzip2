@@ -64,14 +64,15 @@ def write_bz2(path, bzipBlocks):
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
         blockChain.append(self.selector_list) # 1..6*selectors_used
         
-        # 0..20 starting bit length for Huffman deltas
-        blockChain.append(bzipBlock.delta_bit_length[0][0], 5)
         
         # delta_bit_length
-        huffman_lengths = bzipBlock.delta_bit_length
-        for lengths in huffman_lengths:
-            lastLength = lengths[0]
+        deltas_blocks = bzipBlock.delta_bit_length
+        for deltas in deltas_blocks:
+            # 0..20 starting bit length for Huffman deltas
+            blockChain.append(deltas[0], 5)
+            lastLength = deltas[0]
             i = 1
+            # Deltas
             while i < len(lengths):
                 if lengths[i] == lastLength: # Next symbol
                     blockChain.append('0')
@@ -219,34 +220,33 @@ def read_bz2(path):
             
         start += 15
         
-        # Selector_list???????????????????????
+        # Selector list
         print ("    No idea ...")
         # start += 1..6 * bzipBlock.selectors_used
         start += 6 # Patillada
         # End?????????????????????????????????
         
-        # delta_bit_length
+        # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
-        
-        firstLength = dataChain.get(start, start + 6).toInt()
-        bzipBlock.delta_bit_length.append(firstLength)
-        start += 6
-        
-        lastNum = firstLength
-        for i in range (1, nSymbols):
-            while dataChain[start] == 1:
-                start += 1
-                if dataChain[start] == 0:
-                    lastNum += 1
-                else: 
-                    lastNum -= 1
-            start += 1
-            bzipBlock.delta_bit_length.append(lastNum)
-        print ("    List of lengths: ",bzipBlock.delta_bit_length)
+        for _ in bzipBlock.huffman_groups:
+            deltas = [] # Deltas for this table
+            firstLength = dataChain.get(start, start + 6).toInt()
+            deltas.append(firstLength) # First length
+            start += 6
             
+            lastNum = firstLength
+            for i in range (1, nSymbols):
+                while dataChain[start] == 1:
+                    start += 1
+                    if dataChain[start] == 0:
+                        lastNum += 1
+                    else: 
+                        lastNum -= 1
+                start += 1
+                deltas.append(lastNum) # Next delta (difference with the previous number)
+            print ("    Deltas: ", deltas)
+            bzipBlock.delta_bit_length.append(deltas)
 
-        # TO-DO
-        
         # Compressed block
         if iBlock == len(blocks) - 1:
             end = blocks_end[0]
