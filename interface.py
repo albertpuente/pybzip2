@@ -12,7 +12,9 @@ from utils.packaging import *
 
 class Application(tk.Frame):
     def __init__(self, master = None):
+        
         tk.Frame.__init__(self, master)
+        
         self.grid(padx = 40, pady = 40)
         self.createWidgets()
         self.bzip2Blocks = None
@@ -94,7 +96,7 @@ class Application(tk.Frame):
         
         # About (information) widgets
         self.infoLabel = tk.Label(self, fg='#3088F0',
-            font=('TkDefaultFont', 40), padx = 40,
+            font=('TkDefaultFont', 58), padx = 40,
             text = 'bzip2')
         self.infoLabel.grid(column = 5,row = 0, columnspan=10,rowspan=2,
             sticky='N')
@@ -136,10 +138,11 @@ class Application(tk.Frame):
             
             if fileType == 'raw':
                 self.compressButton.configure(state='normal')
-                
+                print ("Compression path unlocked")
                 
             elif fileType == 'bz2':
                 self.decompressButton.configure(state='normal')
+                print ("Decmpression path unlocked")
             else:
                 raise Exception('Unknown filetype')
                     
@@ -153,9 +156,15 @@ class Application(tk.Frame):
             print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
             block.compress()
             i += 1
-            
+        
+        print ('Computing ratio of compression...')
+        totalSize = sum([len(block.msg) for block in self.bzip2Blocks])
+        compressedSize = sum([len(block.compressed.toBytes()) for block in self.bzip2Blocks])
+        ratio = 100*compressedSize/totalSize
+        
         messagebox.showinfo('Compression done', 
-            '{} {}\n{} {}'.format(i, 'blocks compressed.','Compression ratio:', -1), icon = 'info')
+            '{} {}\n{} {}%'.format(i, 'blocks compressed.',
+                'Compression ratio:', ratio), icon = 'info')
             
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
@@ -166,9 +175,15 @@ class Application(tk.Frame):
             print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
             block.decompress()
             i += 1
+            
+        print ('Computing ratio of compression...')
+        totalSize = sum([len(block.decompressed.toBytes()) for block in self.bzip2Blocks])
+        compressedSize = sum([len(block.compressed.toBytes()) for block in self.bzip2Blocks])
+        ratio = 100*compressedSize/totalSize
         
         messagebox.showinfo('Decompression done', 
-            'Compression ratio: TODO', icon = 'info')
+            '{} {}\n{} {}%'.format(i, 'blocks decompressed.',
+                'Compression ratio:', ratio), icon = 'info')
         
         self.compressButton.configure(state='normal')
         self.testDecButton.configure(state='normal')
