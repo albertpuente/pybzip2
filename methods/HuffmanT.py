@@ -113,7 +113,7 @@ def get_rel_syms(counts):
 def get_number_tables(mainsyms):
     k = 2
     for i in range(2,len(mainsyms)):
-        if mainsyms[i][1] / mainsyms[i-1][1] >= 0.75 and mainsyms[i][1] > 10:
+        if mainsyms[i][1] / mainsyms[i-1][1] >= 0.75 and mainsyms[i][1] > 512:
             k += 1
             if k == 6:
                 break
