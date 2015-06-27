@@ -9,6 +9,7 @@
 !methods/*
 !input
 !input/*
+!input/Comparisons/*
 !interface.py
 !pybzip2.py
 !icon.ico
