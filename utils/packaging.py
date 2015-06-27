@@ -147,7 +147,7 @@ def read_bz2(path):
         print ('File signature recognised:', signature)
         
     blockSize = dataChain.get(24,32).toBytes()
-    print ("Block size:", blockSize)
+    print ("Block size:", int(blockSize)*100000,"uncompressed Bytes")
         
     # Search blocks starts
     pi = bitChain(0x314159265359, 48)
