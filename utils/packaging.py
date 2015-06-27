@@ -100,6 +100,13 @@ def write_bz2(path, bzipBlocks):
     file.write(dataChain.toBytes())
     file.close()
     
+def write_file(path, bzipBlocks):
+    # Write to file
+    file = open(path, 'wb+')
+    for block in bzipBlocks:
+        file.write(block.decompressed)
+    file.close()
+    
 def find_start(sl,l):
     results = []
     sll = len(sl)
