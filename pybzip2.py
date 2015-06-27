@@ -29,9 +29,11 @@ class pybzip2compressor:
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
         # Huffman coding
-        # res = huffman_encode(res)
-        # print(res)
-        
+        '''
+        enc = huffman_encode(res)
+        res = enc[0]
+        self.Hufftable = enc[1]
+        '''
         # Selection between multiple Huffman tables
         # Unary base 1 encoding of Huffman table selection
         # Delta encoding (Δ) of Huffman code bit-lengths
@@ -48,6 +50,10 @@ class pybzip2compressor:
         # Selection between multiple Huffman tables
         # Huffman coding
         res = self.compressed
+        '''
+        res = huffman_decode(res, self.Hufftable, [])
+        # necessito la llista sparse de simbols utilitzats al bloc
+        '''
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
         # Move to front (MTF) transform
