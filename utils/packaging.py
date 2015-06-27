@@ -269,6 +269,3 @@ def read_bz2(path):
             dataChain.get(CRC_position+32, len(dataChain)))
             
     return ('bz2', bzipBlocks)
-    
-# TEST
-read_bz2('./input/Test.txt.bz2')
