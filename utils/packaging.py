@@ -67,6 +67,7 @@ def write_bz2(path, bzipBlocks):
         # table_order = [t + 1 for t in table_order]
         # apply mtf
         mtf_tables_used, _ = mtf_encode(table_order)
+
         blockChain.append(unarize(mtf_tables_used)) # 1..6*selectors_used
         
         
@@ -237,9 +238,13 @@ def read_bz2(path):
             start += 1
 
         # undo the mtf, pass the list of possible values (we have up to 6 huffman tables)
+        print ("    Undoing the mtf")
+        print ("    Selector list:", selector_list)
         selector_list = mtf_decode2(selector_list, list(range(6)))
         bzipBlock.table_order = selector_list
-
+        print ("    Done")
+        
+        print ("    Reading deltas...")
         # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
         for x in range(0, bzipBlock.huffman_groups):
