@@ -37,6 +37,24 @@ def bwt_encode2(text):
     asd = list(radix_sort(range(len(text)), partial(bw_key, text)))
     return [text[i - 1] for i in asd], asd.index(0) + 1
 
+def bwt_encode3(text):
+    N = len(text)
+    text2 = text * 2
+    class K:
+        def __init__(self, i):
+            self.i = i
+        def __lt__(a, b):
+            i, j = a.i, b.i
+            for k in range(N): # use `range()` in Python 3
+                if text2[i+k] < text2[j+k]:
+                    return True
+                elif text2[i+k] > text2[j+k]:
+                    return False
+            return False # they're equal
+
+    inorder = sorted(range(N), key=K)
+    return [text2[i+N-1] for i in inorder], inorder.index(0) + 1
+
 def bwt_decode(coding) :
     coded = coding[0]
     index = coding[1] - 1
