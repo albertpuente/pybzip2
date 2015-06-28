@@ -249,7 +249,7 @@ class Application(tk.Frame):
         if path != '':
             write_bz2(path, self.bzip2Blocks)
             messagebox.showinfo('Compression saved.', 
-            'The compressed file has been saved correclty.' , icon = 'info')
+            'The compressed file has been correctly saved.' , icon = 'info')
         
     def saveDecompressionAction(self):
         print("Saving file...")
@@ -262,7 +262,7 @@ class Application(tk.Frame):
         if path != '':
             write_file(path, self.bzip2Blocks)
             messagebox.showinfo('File saved.', 
-            'The decompressed file has been saved correclty.' , icon = 'info')
+            'The decompressed file has been correctly saved.' , icon = 'info')
 
 def launchInterface():
     root = tk.Tk()
