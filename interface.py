@@ -134,7 +134,7 @@ class Application(tk.Frame):
         if path != '':
             print ("Loading file from: ", path)
             (fileType, self.bzip2Blocks) = read_bz2(path)
-            print ("Done")
+            print ("Done,", len(self.bzip2Blocks), "blocks read.")
             
             if fileType == 'raw':
                 self.compressButton.configure(state='normal')
@@ -153,7 +153,7 @@ class Application(tk.Frame):
     def compressAction(self):
         i = 0
         for block in self.bzip2Blocks:
-            print ('Compressing block:', i+1,'of',len(self.bzip2Blocks))
+            print ('Compressing block:', i+1)
             block.compress()
             i += 1
         

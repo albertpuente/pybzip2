@@ -31,8 +31,6 @@ def deunarize(bc):
     # group by 1s, output the length of the group
     return [len(list(k)) for x,k in groupby(bits) if x == 1]
 
-print(deunarize(unarize([1,2,3])))
-
 def sparse(source):
     '''
     returns a sparse array given a source of bytes.
