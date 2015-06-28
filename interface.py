@@ -143,16 +143,16 @@ class Application(tk.Frame):
             
             if fileType == 'raw':
                 self.compressButton.configure(state='normal')
-                print ("Compression path unlocked")
+                print ("Compression path unlocked.")
                 
             elif fileType == 'bz2':
                 self.decompressButton.configure(state='normal')
-                print ("Decmpression path unlocked")
+                print ("Decmpression path unlocked.")
             else:
                 raise Exception('Unknown filetype')
                     
         else:
-            print ("Loading cancelled")
+            print ("Loading cancelled.")
             self.compressButton.configure(state = 'disabled')
             self.decompressButton.configure(state = 'disabled')
             self.testButton.configure(state = 'disabled')
@@ -175,7 +175,7 @@ class Application(tk.Frame):
         
         messagebox.showinfo('Compression done', 
             '{} {}\n{} {}%'.format(i, 'blocks compressed.',
-                'Compression ratio:', ratio), icon = 'info')
+                'Compression ratio:', "%.4f"%ratio), icon = 'info')
             
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
@@ -195,7 +195,7 @@ class Application(tk.Frame):
         
         messagebox.showinfo('Decompression done', 
             '{} {}\n{} {}%'.format(i, 'blocks decompressed.',
-                'Compression ratio:', ratio), icon = 'info')
+                'Compression ratio:', "%.4f"%ratio), icon = 'info')
         
         self.compressButton.configure(state='normal')
         self.testDecButton.configure(state='normal')
@@ -218,7 +218,7 @@ class Application(tk.Frame):
                 icon = 'error')
         
     def testDecompressionAction(self):
-        print("Test decompression")
+        print("Testing decompression.")
         
         path = filedialog.askopenfilename()
         if path != '':
@@ -235,7 +235,7 @@ class Application(tk.Frame):
                     messagebox.showinfo('Validation', 
                         'Compression/decompression error.', icon = 'error')
             else:
-                print ("An uncompressed original file is required")
+                print ("An uncompressed original file is required.")
 
         
     def saveCompressionAction(self):
@@ -248,6 +248,8 @@ class Application(tk.Frame):
         path = filedialog.asksaveasfilename(**options)
         if path != '':
             write_bz2(path, self.bzip2Blocks)
+            messagebox.showinfo('Compression saved.', 
+            'The compressed file has been saved correclty.' , icon = 'info')
         
     def saveDecompressionAction(self):
         print("Saving file...")
@@ -259,6 +261,8 @@ class Application(tk.Frame):
         path = filedialog.asksaveasfilename(**options)
         if path != '':
             write_file(path, self.bzip2Blocks)
+            messagebox.showinfo('File saved.', 
+            'The decompressed file has been saved correclty.' , icon = 'info')
 
 def launchInterface():
     root = tk.Tk()
