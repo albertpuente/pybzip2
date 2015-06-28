@@ -19,18 +19,17 @@ class pybzip2compressor:
 
     def compress(self):
         # Run-length encoding (RLE) of initial data
+        print(self.msg)
         res = rle_encode(self.msg)
-
+        print(res)
         # Burrows–Wheeler transform (BWT) or block sorting
         res, bwt_column = bwt_encode2(res)
         self.bwt_column = bwt_column
         symbols = list(set(res))
         # Move to front (MTF) transform
         res, _ = mtf_encode(res)
-
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
-        
         # Huffman coding
         coded_data, huffman_lengths, table_order = huffman_encode(res)
         self.content = bitChain(''.join(coded_data))
@@ -73,4 +72,5 @@ class pybzip2compressor:
         res = bwt_decode((res, self.bwt_column))
         # Run-length encoding (RLE) of initial data
         res = rle_decode(res)
+        print(res)
         self.decompressed = res
