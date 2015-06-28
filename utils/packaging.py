@@ -221,7 +221,7 @@ def read_bz2(path):
         bzipBlock.huffman_groups = dataChain.get(start, start + 3).toInt()
         print ("    Huffman groups:", bzipBlock.huffman_groups)
             
-        start += 4
+        start += 3
         bzipBlock.selectors_used = dataChain.get(start, start + 15).toInt()
         print ("    Selectors used:", bzipBlock.selectors_used)
             
