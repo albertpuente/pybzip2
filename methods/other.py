@@ -50,4 +50,5 @@ def unsparse(bc):
             for j in range(16):
                 if bc[16 + non0blocks*16 + j] == 1:
                     values += [i*16 + j]
+            non0blocks += 1
     return values
