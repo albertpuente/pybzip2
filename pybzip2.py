@@ -70,5 +70,5 @@ class pybzip2compressor:
         res = bwt_decode((res, self.bwt_column))
         # Run-length encoding (RLE) of initial data
         res = rle_decode(res)
-        print(res)
+        
         self.decompressed = res
