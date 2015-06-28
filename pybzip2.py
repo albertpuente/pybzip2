@@ -32,7 +32,7 @@ class pybzip2compressor:
         self.bwt_column = bwt_column
         print ("BWT RES: ", res)
         print ("BWT COL: ", bwt_column)
-        
+        symbols = list(set(res))
         # Move to front (MTF) transform
         res, _ = mtf_encode(res)
         print ("MTF: ", res)
@@ -64,10 +64,9 @@ class pybzip2compressor:
         self.delta_bit_length = huffman_lengths
         print ("Huf length:", self.delta_bit_length)
         
-        # Sparse bit array showing which symbols are used
-        # res is the source before huffman
-        print ("Symbols to sparse:", set(res))
-        self.bit_maps = sparse(set(res))
+        # Sparse bit array showing which symbols are used in our source
+        print ("Symbols to sparse:", symbols)
+        self.bit_maps = sparse(symbols)
         print ("Sparse:", self.bit_maps)
 
     def decompress(self):
@@ -76,8 +75,11 @@ class pybzip2compressor:
         print ("\nStart decompress()")
         print ("Sparsed bit map:", self.bit_maps)
         # Sparse bit array showing which symbols are used
-        symbols = [256]+unsparse(self.bit_maps)
-        print ("Sym (unsparse):", symbols)
+        symbols = unsparse(self.bit_maps)
+        
+        # remove the 0s
+        huffman_symbols = [s - min(symbols) for s in symbols if s - min(symbols) > 0]
+        print ("Sym (unsparse):", huffman_symbols)
         
         # Delta encoding (Δ) of Huffman code bit-lengths
         # huffman_lengths = []
@@ -91,13 +93,14 @@ class pybzip2compressor:
         # Huffman coding
         res = self.content
 
-        res = huffman_decode(res, huffman_lengths,self.table_order, symbols)
+        # add runa, runb symbols
+        res = huffman_decode(res, huffman_lengths,self.table_order, huffman_symbols + [256, 257])
         print ("HUF dec:", res)
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
         print ("RLE2 dec:", res)
         # Move to front (MTF) transform
-        res = mtf_decode2(res, list(range(256)))
+        res = mtf_decode2(res, symbols)
         print ("MTF dec:", res)
         # Burrows–Wheeler transform (BWT) or block sorting
         res = bwt_decode((res, self.bwt_column))
