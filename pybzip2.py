@@ -13,8 +13,7 @@ from methods.other import *
 
 class pybzip2compressor:
     def __init__(self, msg = None, lvl=1):
-        print ("pyzbzip2 initialized")
-        print ("msg = ", msg)
+        print ("pyzbzip2 initialized.")
         self.msg = msg
         self.content = None
 
