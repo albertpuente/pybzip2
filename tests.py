@@ -1,5 +1,7 @@
 '''
 Performs tests over a series of encoding/decoding methods
+
+This file doesn't test the pybzip2 algorithm by itself
 '''
 
 import random
@@ -49,7 +51,5 @@ if __name__ == '__main__' :
     from methods.other import *
     test(delta_encode, delta_decode)
     test(unarize, deunarize, alphabet=list(range(1,50)))
-    if bb2decode(bb2encode(49)) != 49:
-        print("bijective binary 2 (bb2) error")
-    else :
-        print("bijective binary 2 representation works")
+
+    # add more tests here
