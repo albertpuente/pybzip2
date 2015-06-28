@@ -293,7 +293,7 @@ def read_bz2(path):
         print ("    Global CRC32 is not correct!")
     
     # Padding
-    if (CRC_position + 31)%8 != 0:
+    if (CRC_position + 32)%8 != 0:
         print ('Padding detected:', 
             dataChain.get(CRC_position+32, len(dataChain)))
             
