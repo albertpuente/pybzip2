@@ -200,7 +200,8 @@ def huffman_encode(data):
         tablesused.append(table_index)
     
     # store tables just with length values (because of canonical huffman)
-    tables = [[len(x) for x in y.values()] for y in huffman_tables]
+    symbols = list(range(1,258))
+    tables = [[len(y[x]) if x in y.keys() else 0 for x in symbols] for y in huffman_tables]
     
     return (codedata, tables, tablesused)
     
@@ -223,8 +224,10 @@ def huffman_decode(encdata, tables, tablesused, symbols):
         # reconstruct canonical code
         first = True
         pre = ''
-        
         for key in D:
+            if D[key] == 0:
+                D[key] = ''
+                continue
             if first:
                 first = False
                 D[key] = '0'*D[key]

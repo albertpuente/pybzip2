@@ -44,6 +44,8 @@ class pybzip2compressor:
         
         # Huffman coding
         coded_data, huffman_lengths, table_order = huffman_encode(res)
+        print("huffman lengths[0]:")
+        print("   ", huffman_lengths[0])
         self.content = bitChain(''.join(coded_data))
         self.huffman_groups = len(huffman_lengths)
         print ("HUFFMAN GROUPS:", self.huffman_groups)
@@ -78,7 +80,7 @@ class pybzip2compressor:
         symbols = unsparse(self.bit_maps)
         
         # remove the 0s
-        huffman_symbols = list(range(2,len(symbols))) + [256, 257]
+        huffman_symbols = list(range(1,258))
         print(huffman_symbols)
         print ("Sym (unsparse):", symbols)
         
