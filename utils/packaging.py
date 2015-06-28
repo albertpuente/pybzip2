@@ -70,19 +70,6 @@ def write_bz2(path, bzipBlocks):
 
         unarized = unarize(mtf_tables_used)
         blockChain.append(unarized) # 1..6*selectors_used
-
-        # LALALALLAL
-        start = 0
-        selector_list = [0]
-        while len(selector_list) < bzipBlock.selectors_used:
-            if unarized.get(start, start+1).toInt() == 1:
-                selector_list[-1] += 1
-            else:
-                selector_list += [0]
-            start += 1
-        if selector_list == mtf_tables_used:
-            print("success")
-        # LALALALLALAL
         
         # delta_bit_length
         deltas_blocks = bzipBlock.delta_bit_length
@@ -243,13 +230,16 @@ def read_bz2(path):
         print(dataChain.get(start, start+30))
         # Selector list
         selector_list = [0]
-        while len(selector_list) < bzipBlock.selectors_used:
+        i = 0
+        while i < bzipBlock.selectors_used:
             if dataChain.get(start, start+1).toInt() == 1:
                 selector_list[-1] += 1
+                if i + 1 == bzipBlock.selectors_used and selector_list[-1] == 5:
+                    i += 1
             else:
                 selector_list += [0]
+                i += 1
             start += 1
-        print(len(selector_list))
         # undo the mtf, pass the list of possible values (we have up to 6 huffman tables)
         print ("    Undoing the mtf")
         print ("    Selector list:", selector_list)
