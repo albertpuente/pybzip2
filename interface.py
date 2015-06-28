@@ -18,6 +18,7 @@ class Application(tk.Frame):
         self.grid(padx = 40, pady = 40)
         self.createWidgets()
         self.bzip2Blocks = None
+        self.lastName = ''
         
     def createWidgets(self):
         
@@ -96,8 +97,8 @@ class Application(tk.Frame):
         
         # About (information) widgets
         self.infoLabel = tk.Label(self, fg='#3088F0',
-            font=('TkDefaultFont', 58), padx = 40,
-            text = 'bzip2')
+            font=('TkDefaultFont', 38), padx = 40,
+            text = 'pybzip2')
         self.infoLabel.grid(column = 5,row = 0, columnspan=10,rowspan=2,
             sticky='N')
         self.cdiLabel = tk.Label(self, fg='#444444',
@@ -132,6 +133,9 @@ class Application(tk.Frame):
         
         path = filedialog.askopenfilename()
         if path != '':
+            parts = path.split('/')
+            self.lastName = parts[len(parts)-1]
+            
             print ("Loading file from: ", path)
             (fileType, self.bzip2Blocks) = read_bz2(path)
             print ("Done,", len(self.bzip2Blocks), "blocks read.")
@@ -232,7 +236,7 @@ class Application(tk.Frame):
         
         options = {}
         options['filetypes'] = [('bzip2', '.bz2')]
-        options['initialfile'] = 'compressed file'
+        options['initialfile'] = self.lastName + '.pybz2'
         
         path = filedialog.asksaveasfilename(**options)
         if path != '':
@@ -242,7 +246,8 @@ class Application(tk.Frame):
         print("Saving file...")
         options = {}
         options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
-        options['initialfile'] = 'name'
+        
+        options['initialfile'] = self.lastName.split('.pybz2')[0]
         
         path = filedialog.asksaveasfilename(**options)
         if path != '':
@@ -252,7 +257,7 @@ def launchInterface():
     root = tk.Tk()
     root.geometry('800x380') # Window size
     root.resizable(0,0) # Disable resize
-    root.title('bzip2 - CDI')
+    root.title('pybzip2 - CDI')
     try:
         app = Application(master = root)
         app.mainloop()
