@@ -17,8 +17,9 @@ def bwt_encode(msg) :
 
 def bwt_encode2(text):
     import sys
-    sys.setrecursionlimit(len(text) + 1)
+    sys.setrecursionlimit(20000)
     def radix_sort(values, key, step=0):
+        print(step)
         if len(values) < 2:
             for value in values:
                 yield value
@@ -31,8 +32,10 @@ def bwt_encode2(text):
         for k in sorted(bins.keys()):
             for r in radix_sort(bins[k], key, step + 1):
                 yield r
+
     def bw_key(text, value, step):
         return text[(value + step) % len(text)]
+
     from functools import partial
     asd = list(radix_sort(range(len(text)), partial(bw_key, text)))
     return [text[i - 1] for i in asd], asd.index(0) + 1
