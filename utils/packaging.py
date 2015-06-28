@@ -127,13 +127,12 @@ def write_file(path, bzipBlocks):
 '''
 Finds the start positions of a sequence of bits that appear in a larger sequence
 '''
-def find_start(sl,l):
-    results = []
-    sll = len(sl)
-    for ind in (i for i,e in enumerate(l) if e == sl[0]):
-        if l[ind:ind+sll] == sl:
-            results.append(ind)
-    return results
+def find_start(sub, big):
+    R = []
+    for i in range(0, len(big) - len(sub) + 1):
+        if big[i:i+len(sub)] == sub:
+            R.append(i)
+    return R
 
 '''
 Reads a file and creates a list of bzipBlocks (class pybzip2compressor)
@@ -176,14 +175,14 @@ def read_bz2(path):
         
     # Search blocks starts
     pi = bitChain(0x314159265359, 48)
-    blocks = find_start(pi.bits(), dataChain.bits())
+blocks = find_start(pi.bits(), dataChain.bits())
     print ('Blocks begin at positions:', blocks)
     
     # Search blocks end
     sqrt_pi = bitChain(0x177245385090, 48)
     blocks_end = find_start(sqrt_pi.bits(), dataChain.bits())
     print ('Blocks end at position:', blocks_end)
-    
+
     # For each block
     for iBlock in range(0, len(blocks)):
         start = blocks[iBlock]

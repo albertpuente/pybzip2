@@ -27,7 +27,7 @@ class bitChain:
             if not bitLength:
                 raise Exception("bitChain.append: int requires bitLength")
             binaryLength = '{0:0'+str(bitLength)+'b}'
-            self.chain += list(binaryLength.format(data))
+            self.chain += [int(x) for x in binaryLength.format(data)]
         elif type(data) == bitChain:
             self.chain += data.bits()
         elif type(data) == list:
