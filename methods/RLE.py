@@ -20,7 +20,6 @@ class rle_values:
     runb = runa + 1
 
 def rle_encode(msg) :
-    print ("RLE ENCODING...")
     if len(msg) == 0: return msg
     
     N = rle_values.N
