@@ -78,8 +78,9 @@ class pybzip2compressor:
         symbols = unsparse(self.bit_maps)
         
         # remove the 0s
-        huffman_symbols = [s - min(symbols) for s in symbols if s - min(symbols) > 0]
-        print ("Sym (unsparse):", huffman_symbols)
+        huffman_symbols = list(range(2,len(symbols))) + [256, 257]
+        print(huffman_symbols)
+        print ("Sym (unsparse):", symbols)
         
         # Delta encoding (Δ) of Huffman code bit-lengths
         # huffman_lengths = []
@@ -94,7 +95,7 @@ class pybzip2compressor:
         res = self.content
 
         # add runa, runb symbols
-        res = huffman_decode(res, huffman_lengths,self.table_order, huffman_symbols + [256, 257])
+        res = huffman_decode(res, huffman_lengths,self.table_order, huffman_symbols)
         print ("HUF dec:", res)
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
