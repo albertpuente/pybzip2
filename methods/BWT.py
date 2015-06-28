@@ -16,6 +16,8 @@ def bwt_encode(msg) :
     return [row[-1] for row in all_rots], all_rots.index(msg) + 1
 
 def bwt_encode2(text):
+    import sys
+    sys.setrecursionlimit(len(text) + 1)
     def radix_sort(values, key, step=0):
         if len(values) < 2:
             for value in values:
