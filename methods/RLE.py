@@ -25,14 +25,13 @@ def rle_encode(msg) :
     N = rle_values.N
     coded = [msg[0]]
     count = 1
-    first = False
     for i in range(1, len(msg)):
         if msg[i] == msg[i-1] :
             count += 1
             if count >= 255 :
                 coded.append(count - N)
-                count = 1
-            if count <= N:
+                count = 0
+            elif count <= N:
                 coded.append(msg[i])
         else :
             if count >= N:
@@ -41,6 +40,7 @@ def rle_encode(msg) :
             count = 1
     if count > N :
         coded.append(count - N)
+    print(coded)
     return coded
 
 def rle_decode(coding) :

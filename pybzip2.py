@@ -19,9 +19,7 @@ class pybzip2compressor:
 
     def compress(self):
         # Run-length encoding (RLE) of initial data
-        print(self.msg)
         res = rle_encode(self.msg)
-        print(res)
         # Burrows–Wheeler transform (BWT) or block sorting
         res, bwt_column = bwt_encode2(res)
         self.bwt_column = bwt_column
