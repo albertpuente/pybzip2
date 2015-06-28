@@ -175,7 +175,7 @@ class Application(tk.Frame):
         
         messagebox.showinfo('Compression done', 
             '{} {}\n{} {}%'.format(i, 'blocks compressed.',
-                'Compression ratio:', "%.4f"%ratio), icon = 'info')
+                'Compression ratio (without headers):', "%.4f"%ratio), icon = 'info')
             
         self.compressButton.configure(state='normal')
         self.testButton.configure(state='normal')
@@ -195,7 +195,7 @@ class Application(tk.Frame):
         
         messagebox.showinfo('Decompression done', 
             '{} {}\n{} {}%'.format(i, 'blocks decompressed.',
-                'Compression ratio:', "%.4f"%ratio), icon = 'info')
+                'Compression ratio (without headers):', "%.4f"%ratio), icon = 'info')
         
         self.compressButton.configure(state='normal')
         self.testDecButton.configure(state='normal')
