@@ -242,7 +242,7 @@ class Application(tk.Frame):
         print("Saving compression...")
         
         options = {}
-        options['filetypes'] = [('bzip2', '.bz2')]
+        options['filetypes'] = [('pybzip2', '.pybz2')]
         options['initialfile'] = self.lastName + '.pybz2'
         
         path = filedialog.asksaveasfilename(**options)
