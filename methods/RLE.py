@@ -40,7 +40,6 @@ def rle_encode(msg) :
             count = 1
     if count > N :
         coded.append(count - N)
-    print(coded)
     return coded
 
 def rle_decode(coding) :
