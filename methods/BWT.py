@@ -19,7 +19,7 @@ def bwt_encode2(text):
     import sys
     sys.setrecursionlimit(20000)
     def radix_sort(values, key, step=0):
-        print(step)
+        # print(step)
         if len(values) < 2:
             for value in values:
                 yield value
