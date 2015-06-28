@@ -109,7 +109,7 @@ class Application(tk.Frame):
             sticky='N')
         self.aboutLabel = tk.Label(self, fg='#444444',
             font=("TkDefaultFont", 14), padx = 40,
-            text = 'Joan Ginés Ametllé\n'\
+            text = 'Joan Ginés i Ametllé\n'\
             'Andrés Mingorance López\n'\
             'Albert Puente Encinas')
         self.aboutLabel.grid(column = 5,row = 4, columnspan=10,rowspan=3,
