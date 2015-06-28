@@ -31,7 +31,6 @@ class pybzip2compressor:
 
         # Run-length encoding (RLE) of MTF result
         res = rle2_encode(res)
-        print ("RLE2: ", res)
         
         # Huffman coding
         coded_data, huffman_lengths, table_order = huffman_encode(res)
