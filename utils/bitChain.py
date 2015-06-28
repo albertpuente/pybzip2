@@ -26,13 +26,8 @@ class bitChain:
         elif type(data) == int:
             if not bitLength:
                 raise Exception("bitChain.append: int requires bitLength")
-            new = []
-            while bitLength > 0:
-                if data%2: new.insert(0, 1)
-                else: new.insert(0, 0)
-                bitLength -= 1
-                data >>= 1
-            self.chain += new
+            binaryLength = '{0:0'+str(bitLength)+'b}'
+            self.chain += list(binaryLength.format(data))
         elif type(data) == bitChain:
             self.chain += data.bits()
         elif type(data) == list:
@@ -60,8 +55,7 @@ class bitChain:
         return binascii.hexlify(bytearray(data))
     
     def toInt(self):
-        data = self.toBytes()
-        return int.from_bytes(data, byteorder = 'big')
+        return int(str(self), 2)
         
     def get(self, start, end):
         if start < 0 or end > len(self) or start >= end:
