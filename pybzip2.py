@@ -76,7 +76,7 @@ class pybzip2compressor:
         print ("\nStart decompress()")
         print ("Sparsed bit map:", self.bit_maps)
         # Sparse bit array showing which symbols are used
-        symbols = unsparse(self.bit_maps)
+        symbols = [256]+unsparse(self.bit_maps)
         print ("Sym (unsparse):", symbols)
         
         # Delta encoding (Δ) of Huffman code bit-lengths
