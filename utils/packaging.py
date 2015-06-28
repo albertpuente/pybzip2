@@ -64,7 +64,7 @@ def write_bz2(path, bzipBlocks):
         # zero-terminated bit runs (0..62) of MTF'ed Huffman table (*selectors_used)
         # start by adding 1 to the indices for the unary encoding to work
         table_order = bzipBlock.table_order
-        table_order = [t + 1 for t in table_order]
+        # table_order = [t + 1 for t in table_order]
         # apply mtf
         mtf_tables_used, _ = mtf_encode(table_order)
         blockChain.append(unarize(mtf_tables_used)) # 1..6*selectors_used
