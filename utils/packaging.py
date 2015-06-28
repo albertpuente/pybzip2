@@ -213,8 +213,8 @@ def read_bz2(path):
         huffman_used_bitmaps = dataChain.get(start, start+16*N) 
         bzipBlock.bit_maps.append(huffman_used_bitmaps)
         print ("    Huffman used map (sparse):", bzipBlock.bit_maps)
-        nSymbols = sum(huffman_used_bitmaps.bits())
-        print ("    N symbols: ", nSymbols)
+        # nSymbols = sum(huffman_used_bitmaps.bits())
+        # print ("    N symbols: ", nSymbols)
         
         start += 16*N
         bzipBlock.huffman_groups = dataChain.get(start, start + 3).toInt()
@@ -249,20 +249,21 @@ def read_bz2(path):
         print ("    Reading deltas...")
         # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
-        for x in range(0, bzipBlock.huffman_groups):
+        for _ in range(bzipBlock.huffman_groups):
             deltas = [] # Deltas for this table
             firstLength = dataChain.get(start, start + 6).toInt()
             deltas.append(firstLength) # First length
             start += 6
             
             lastNum = firstLength
-            for i in range (1, nSymbols):
+            for i in range (257): # 258 - 1 deltas following the first
                 while dataChain[start] == 1:
                     start += 1
                     if dataChain[start] == 0:
                         lastNum += 1
                     else: 
                         lastNum -= 1
+                    start += 1
                 start += 1
                 deltas.append(lastNum) # Next delta (difference with the previous number)
             print ("    Deltas: ", deltas)
