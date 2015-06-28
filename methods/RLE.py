@@ -119,6 +119,8 @@ def rle2_encode(msg):
                 coded += bb2encode(count)
                 count = 0
             coded += [x]
+    if count > 0:
+        coded += bb2encode(count)
     return coded
 
 def rle2_decode(coded):
@@ -151,4 +153,6 @@ def rle2_decode(coded):
             runab = []
             i = 0
             run = 0
+    if run > 0:
+        msg += [0] * run
     return msg
