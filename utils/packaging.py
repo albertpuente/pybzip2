@@ -21,8 +21,7 @@ def crc32(data):
 Writes a .bz2 file using bzipBlocks (class pybzip2compressor)
 '''
 def write_bz2(path, bzipBlocks):
-    TODO = 0 # Provisional
-    
+
     dataChain = bitChain() # What is going to be written
     streamChain = bitChain() # To compute the global CRC32
     
@@ -146,8 +145,8 @@ def read_bz2(path):
     rawBytes = inputData
     file.close()
     
-    dataChain = bitChain(rawBytes)
-    
+    dataChain = bitChain(rawBytes) # To parse the file
+    streamChain = bitChain() # To compute the global CRC
     
     if inputData == dataChain.toBytes():
         print ('File converted to bitChain correctly.')
@@ -189,13 +188,13 @@ def read_bz2(path):
         
         bzipBlock = pybzip2compressor()
         
-        print ("BLOCK at position", start)
+        print ("BLOCK start at position", start)
         print ("    PI:", 
             dataChain.get(start, start + 48).toHex())
         
         start += 48
-        print ("    Block CRC",
-            dataChain.get(start, start + 32).toInt())
+        blockCRC = dataChain.get(start, start + 32).toInt()
+        print ("    Block CRC", blockCRC)
             
         start += 32
         print ("    Randomized:",
@@ -207,14 +206,14 @@ def read_bz2(path):
         
         start += 24
         bzipBlock.bit_maps = dataChain.get(start, start+16)
-
+        print ("    Used bitmaps:", bzipBlock.bit_maps)
         start += 16
         N = sum(bzipBlock.bit_maps.bits())
         huffman_used_bitmaps = dataChain.get(start, start+16*N) 
+        for i in range(0, N):
+            print ("        Bitmap:", huffman_used_bitmaps.get(i*16, (i+1)*16))
         bzipBlock.bit_maps.append(huffman_used_bitmaps)
-        print ("    Huffman used map (sparse):", bzipBlock.bit_maps)
-        # nSymbols = sum(huffman_used_bitmaps.bits())
-        # print ("    N symbols: ", nSymbols)
+        
         
         start += 16*N
         bzipBlock.huffman_groups = dataChain.get(start, start + 3).toInt()
@@ -239,11 +238,10 @@ def read_bz2(path):
                 i += 1
             start += 1
         # undo the mtf, pass the list of possible values (we have up to 6 huffman tables)
-        print ("    Undoing the mtf")
-        print ("    Selector list:", selector_list)
+        print ("    Undoing the mtf...")
         selector_list = mtf_decode2(selector_list, list(range(6)))
         bzipBlock.table_order = selector_list
-        print ("    Done")
+        print ("    Done.")
         
         print ("    Reading deltas...")
         # Delta bit lengths for each huffman table
@@ -252,13 +250,11 @@ def read_bz2(path):
         for _ in range(bzipBlock.huffman_groups):
             deltas = [] # Deltas for this table
             firstLength = dataChain.get(start, start + 5).toInt()
-            print(firstLength)
             deltas.append(firstLength) # First length
             start += 5
             
             lastNum = firstLength
             for i in range (257): # 258 - 1 deltas following the first
-                print(lastNum,",",end="")
                 while dataChain[start] == 1:
                     start += 1
                     if dataChain[start] == 0:
@@ -268,9 +264,8 @@ def read_bz2(path):
                     start += 1
                 start += 1
                 deltas.append(lastNum) # Next delta (difference with the previous number)
-            print ("    Deltas: ", deltas)
             bzipBlock.delta_bit_length.append(deltas)
-
+        print ("    Done.")
         # Compressed block
         if iBlock == len(blocks) - 1:
             end = blocks_end[0]
@@ -278,14 +273,24 @@ def read_bz2(path):
             end = blocks[iBlock + 1]
         
         bzipBlock.content = dataChain.get(start, end)
+        streamChain.append(bzipBlock.content)
         
+        if (crc32(bzipBlock.content.toBytes()) == blockCRC):
+            print ("    Block CRC32 is correct.")
+        else:
+            print ("    Block CRC32 is not correct!")
         # Block end, append to the list
         bzipBlocks.append(bzipBlock)
     
     # Global CRC_32
     CRC_position = blocks_end[0] + 48
-    globalCRC = dataChain.get(CRC_position, CRC_position+32)
-    print ('Global CRC is:', globalCRC.toInt())
+    globalCRC = dataChain.get(CRC_position, CRC_position+32).toInt()
+    print ('    Global CRC is:', globalCRC)
+    
+    if (crc32(streamChain.toBytes()) == globalCRC):
+        print ("    Global CRC32 is correct.")
+    else:
+        print ("    Global CRC32 is not correct!")
     
     # Padding
     if (CRC_position + 31)%8 != 0:
