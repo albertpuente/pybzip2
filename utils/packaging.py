@@ -226,7 +226,6 @@ def read_bz2(path):
             
         start += 15
 
-        print(dataChain.get(start, start+30))
         # Selector list
         selector_list = [0]
         i = 0
@@ -249,14 +248,17 @@ def read_bz2(path):
         print ("    Reading deltas...")
         # Delta bit lengths for each huffman table
         bzipBlock.delta_bit_length = []
+        start -= 1
         for _ in range(bzipBlock.huffman_groups):
             deltas = [] # Deltas for this table
-            firstLength = dataChain.get(start, start + 6).toInt()
+            firstLength = dataChain.get(start, start + 5).toInt()
+            print(firstLength)
             deltas.append(firstLength) # First length
-            start += 6
+            start += 5
             
             lastNum = firstLength
             for i in range (257): # 258 - 1 deltas following the first
+                print(lastNum,",",end="")
                 while dataChain[start] == 1:
                     start += 1
                     if dataChain[start] == 0:
