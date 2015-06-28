@@ -72,7 +72,7 @@ class pybzip2compressor:
         res = rle2_decode(res)
 
         # Move to front (MTF) transform
-        res = mtf_decode2(res, symbols)
+        res = mtf_decode2(res, list(range(256)))
         
         # Burrows–Wheeler transform (BWT) or block sorting
         res = bwt_decode((res, self.bwt_column))
