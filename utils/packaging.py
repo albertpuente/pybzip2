@@ -175,7 +175,7 @@ def read_bz2(path):
         
     # Search blocks starts
     pi = bitChain(0x314159265359, 48)
-blocks = find_start(pi.bits(), dataChain.bits())
+    blocks = find_start(pi.bits(), dataChain.bits())
     print ('Blocks begin at positions:', blocks)
     
     # Search blocks end

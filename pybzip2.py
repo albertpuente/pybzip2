@@ -49,7 +49,7 @@ class pybzip2compressor:
         self.content = bitChain(''.join(coded_data))
         self.huffman_groups = len(huffman_lengths)
         print ("HUFFMAN GROUPS:", self.huffman_groups)
-        print ("Content: ", self.content)
+        # print ("Content: ", self.content)
         
         # Selection between multiple Huffman tables
         self.selectors_used = len(table_order)
@@ -98,7 +98,7 @@ class pybzip2compressor:
 
         # add runa, runb symbols
         res = huffman_decode(res, huffman_lengths,self.table_order, huffman_symbols)
-        print ("HUF dec:", res)
+        # print ("HUF dec:", res)
         # Run-length encoding (RLE) of MTF result
         res = rle2_decode(res)
         print ("RLE2 dec:", res)
