@@ -9,6 +9,7 @@ from tkinter import messagebox
 
 from pybzip2 import *
 from utils.packaging import *
+from utils.convert import *
 
 class Application(tk.Frame):
     def __init__(self, master = None):
@@ -152,6 +153,12 @@ class Application(tk.Frame):
                     
         else:
             print ("Loading cancelled")
+            self.compressButton.configure(state = 'disabled')
+            self.decompressButton.configure(state = 'disabled')
+            self.testButton.configure(state = 'disabled')
+            self.testDecButton.configure(state = 'disabled')
+            self.saveButton.configure(state = 'disabled')
+            self.saveDecButton.configure(state = 'disabled')
         
         
     def compressAction(self):
@@ -182,7 +189,7 @@ class Application(tk.Frame):
             i += 1
             
         print ('Computing ratio of compression...')
-        totalSize = sum([len(block.decompressed.toBytes()) for block in self.bzip2Blocks])
+        totalSize = sum([len(intlist2bytes(block.decompressed)) for block in self.bzip2Blocks])
         compressedSize = sum([len(block.content.toBytes()) for block in self.bzip2Blocks])
         ratio = 100*compressedSize/totalSize
         
@@ -251,7 +258,7 @@ class Application(tk.Frame):
         
         path = filedialog.asksaveasfilename(**options)
         if path != '':
-            write_bz2(path, self.bzip2Blocks)
+            write_file(path, self.bzip2Blocks)
 
 def launchInterface():
     root = tk.Tk()

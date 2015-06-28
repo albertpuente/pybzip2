@@ -121,7 +121,7 @@ def write_file(path, bzipBlocks):
     # Write to file
     file = open(path, 'wb+')
     for block in bzipBlocks:
-        file.write(block.decompressed)
+        file.write(intlist2bytes(block.decompressed))
     file.close()
     
 '''
