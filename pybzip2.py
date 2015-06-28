@@ -28,7 +28,7 @@ class pybzip2compressor:
         print ("RLE: ", res)
         
         # Burrows–Wheeler transform (BWT) or block sorting
-        res, bwt_column = bwt_encode(res)
+        res, bwt_column = bwt_encode2(res)
         self.bwt_column = bwt_column
         print ("BWT RES: ", res)
         print ("BWT COL: ", bwt_column)
@@ -52,7 +52,7 @@ class pybzip2compressor:
         print ("Content: ", self.content)
         
         # Selection between multiple Huffman tables
-        self.selectors_used = bitChain(len(table_order), 15)
+        self.selectors_used = len(table_order)
         print ("Selectors used:", self.selectors_used)
         
         # store this to apply the mtf+unary encoding in packaging.py
